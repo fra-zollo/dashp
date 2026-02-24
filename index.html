@@ -385,19 +385,47 @@
         <h2 class="column-title">Latest updates</h2>
       </div>
       <div class="card-container" id="updates" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <!-- Notice the added data-color attributes for editing memory -->
+        
         <div class="card" draggable="true" ondragstart="drag(event)" id="card1">
-          <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Q3 Metrics Report Published</p>
-          <p class="card-subtitle">Today at 9:00 AM</p>
-          <p class="card-body">The new report is available on the shared drive. Please review before the afternoon meeting.</p>
+          <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Strategia Brand Identity</p>
+          <p class="card-subtitle">Riassunto riunione 22/02/2026</p>
+          <p class="card-body">MATE ha evidenziato la necessità di un'identità forte che vada oltre la sigla "EYC". Volontà di risolvere alcune criticità del logo. Apprezzata l'idea di usare la simbologia, anche quella delle "4 vie".</p>
           <select class="assignee-select">
             <option value="" disabled>Assign to...</option>
-            <option value="anna" selected>Anna</option>
-            <option value="marc">Marc</option>
-            <option value="sophia">Sophia</option>
-            <option value="anyone">Anyone</option>
+            <option value="inc">INC</option>
+            <option value="mate" selected>MATE</option>
+            <option value="zollo">Zollo</option>
+            <option value="clg">CLG</option>
+            <option value="tutti">Tutti</option>
           </select>
         </div>
+
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card2">
+          <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Gestione Media e Portavoci</p>
+          <p class="card-body">- Media tradizionali: Assessora Aimi e rappresentante giovani (formazione INC).<br>- Social Media: approccio corale, assegnare giovani a ogni "piazza".</p>
+          <select class="assignee-select">
+            <option value="" disabled>Assign to...</option>
+            <option value="inc" selected>INC</option>
+            <option value="mate">MATE</option>
+            <option value="zollo">Zollo</option>
+            <option value="clg">CLG</option>
+            <option value="tutti">Tutti</option>
+          </select>
+        </div>
+
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card3">
+          <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Ruoli e Supervisione</p>
+          <p class="card-body">INC manterrà stabilmente il ruolo di riferimento principale per la supervisione strategica e dei contenuti.</p>
+          <select class="assignee-select">
+            <option value="" disabled>Assign to...</option>
+            <option value="inc" selected>INC</option>
+            <option value="mate">MATE</option>
+            <option value="zollo">Zollo</option>
+            <option value="clg">CLG</option>
+            <option value="tutti">Tutti</option>
+          </select>
+        </div>
+
       </div>
       <button class="add-btn" onclick="openAddModal('updates')">+ Add update</button>
     </div>
@@ -411,16 +439,61 @@
         <div class="sub-column">
           <h3 class="sub-column-title">Short Term</h3>
           <div class="card-container" id="todo-short" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card2">
-              <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Email client regarding brief</p>
+            
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card4">
+              <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Grafica e Identità</p>
+              <p class="card-subtitle">Entro questa settimana</p>
+              <p class="card-body">MATE definisce la timeline di sviluppo con i grafici vincitori, apporta gli aggiustamenti al logo e inizia a "esplodere" brand identity. Creare nuova carta intestata.</p>
               <select class="assignee-select">
-                <option value="" disabled selected>Assign to...</option>
-                <option value="anna">Anna</option>
-                <option value="marc">Marc</option>
-                <option value="sophia">Sophia</option>
-                <option value="anyone">Anyone</option>
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate" selected>MATE</option>
+                <option value="zollo">Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti">Tutti</option>
               </select>
             </div>
+
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card5">
+              <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Sito Web e Concept</p>
+              <p class="card-body">MATE e Zollo mettono online un sito web temporaneo. Feedback con il CLG sulla brand identity e sui claim.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate">MATE</option>
+                <option value="zollo" selected>Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti">Tutti</option>
+              </select>
+            </div>
+
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card6">
+              <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Task Riunione Mercoledì</p>
+              <p class="card-body">- Decidere identità visiva "di transizione".<br>- Scegliere tool gestionale calendario/materiali.<br>- Calendarizzare confronto Comitato.<br>- Definire specifiche digitali.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate">MATE</option>
+                <option value="zollo">Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti" selected>Tutti</option>
+              </select>
+            </div>
+
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card7">
+              <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Team Volontari</p>
+              <p class="card-subtitle">Avvio Immediato</p>
+              <p class="card-body">Creare il gruppo WhatsApp, allargare la base dei volontari e iniziare a lavorare con il supporto di editing di Zollo.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate">MATE</option>
+                <option value="zollo" selected>Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti">Tutti</option>
+              </select>
+            </div>
+
           </div>
           <button class="add-btn" onclick="openAddModal('todo-short')">+ Add short term</button>
         </div>
@@ -428,18 +501,63 @@
         <div class="sub-column">
           <h3 class="sub-column-title">Long Term</h3>
           <div class="card-container" id="todo-long" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card3">
-              <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Website Redesign 2025</p>
-              <p class="card-subtitle">Due Q1</p>
-              <p class="card-body">Start gathering inspiration for the UI refresh.</p>
+            
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card8">
+              <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Evento Media di Lancio</p>
+              <p class="card-subtitle">Settembre 2026</p>
+              <p class="card-body">Organizzare un grande evento invitando la stampa nazionale ed europea. Preparare in anticipo materiali e storie.</p>
               <select class="assignee-select">
                 <option value="" disabled>Assign to...</option>
-                <option value="anna">Anna</option>
-                <option value="marc">Marc</option>
-                <option value="sophia">Sophia</option>
-                <option value="anyone" selected>Anyone</option>
+                <option value="inc" selected>INC</option>
+                <option value="mate">MATE</option>
+                <option value="zollo">Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti">Tutti</option>
               </select>
             </div>
+
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card9">
+              <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Lancio Sito Web Ufficiale</p>
+              <p class="card-subtitle">Settembre 2026</p>
+              <p class="card-body">Pubblicare il nuovo sito definitivo, aggiornato e pienamente operativo. Fissare call per elementi tecnici.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate" selected>MATE</option>
+                <option value="zollo">Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti">Tutti</option>
+              </select>
+            </div>
+
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card10">
+              <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Team Content-Creators</p>
+              <p class="card-subtitle">Sett 2026 in poi</p>
+              <p class="card-body">Guidare l'evoluzione del gruppo di volontari fino alla creazione del "gruppo di giovani dell'hub creativo". Valutare tirocini. Strutturare call.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate">MATE</option>
+                <option value="zollo" selected>Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti">Tutti</option>
+              </select>
+            </div>
+
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card11">
+              <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Avvio Anno Capitale</p>
+              <p class="card-subtitle">Da Settembre in poi</p>
+              <p class="card-body">Essere pronti a regime con la task force di comunicazione.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="inc">INC</option>
+                <option value="mate">MATE</option>
+                <option value="zollo">Zollo</option>
+                <option value="clg">CLG</option>
+                <option value="tutti" selected>Tutti</option>
+              </select>
+            </div>
+
           </div>
           <button class="add-btn" onclick="openAddModal('todo-long')">+ Add long term</button>
         </div>
@@ -452,6 +570,35 @@
         <h2 class="column-title">Next events</h2>
       </div>
       <div class="card-container" id="events" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card12">
+          <p class="card-title" style="color: #AF52DE;" data-color="#AF52DE">Evento con Ministro Zangrillo</p>
+          <p class="card-subtitle">3 Marzo 2026</p>
+          <p class="card-body">INC raccoglie e prepara i testi per la stampa.</p>
+          <select class="assignee-select">
+            <option value="" disabled>Assign to...</option>
+            <option value="inc" selected>INC</option>
+            <option value="mate">MATE</option>
+            <option value="zollo">Zollo</option>
+            <option value="clg">CLG</option>
+            <option value="tutti">Tutti</option>
+          </select>
+        </div>
+
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card13">
+          <p class="card-title" style="color: #AF52DE;" data-color="#AF52DE">Workshop Universitario</p>
+          <p class="card-subtitle">6 Marzo 2026</p>
+          <p class="card-body">140 giovani europei. Zollo attiva subito i volontari CLG per formare un gruppo di comunicazione operativo temporaneo.</p>
+          <select class="assignee-select">
+            <option value="" disabled>Assign to...</option>
+            <option value="inc">INC</option>
+            <option value="mate">MATE</option>
+            <option value="zollo" selected>Zollo</option>
+            <option value="clg">CLG</option>
+            <option value="tutti">Tutti</option>
+          </select>
+        </div>
+
       </div>
       <button class="add-btn" onclick="openAddModal('events')">+ Add event</button>
     </div>
@@ -462,17 +609,7 @@
         <h2 class="column-title">Piano editoriale</h2>
       </div>
       <div class="card-container" id="editoriale" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card4">
-          <p class="card-title" style="color: #AF52DE;" data-color="#AF52DE">Instagram Post: Behind the scenes</p>
-          <p class="card-subtitle">Friday 15th</p>
-          <select class="assignee-select">
-            <option value="" disabled selected>Assign to...</option>
-            <option value="anna">Anna</option>
-            <option value="marc">Marc</option>
-            <option value="sophia">Sophia</option>
-            <option value="anyone">Anyone</option>
-          </select>
-        </div>
+        <!-- Empty drop zone -->
       </div>
       <button class="add-btn" onclick="openAddModal('editoriale')">+ Add post</button>
     </div>
@@ -483,17 +620,7 @@
         <h2 class="column-title">info importanti</h2>
       </div>
       <div class="card-container" id="info" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card5">
-          <p class="card-title" style="color: #34C759;" data-color="#34C759">Office Wifi Password</p>
-          <p class="card-body">Network: Guest_5G<br>Pass: AppleCRM2024!</p>
-          <select class="assignee-select">
-            <option value="" disabled selected>Assign to...</option>
-            <option value="anna">Anna</option>
-            <option value="marc">Marc</option>
-            <option value="sophia">Sophia</option>
-            <option value="anyone">Anyone</option>
-          </select>
-        </div>
+        <!-- Empty drop zone -->
       </div>
       <button class="add-btn" onclick="openAddModal('info')">+ Add info</button>
     </div>
@@ -597,7 +724,7 @@
 
 
   // --- Modal Logic ---
-  let cardCounter = 6; 
+  let cardCounter = 14; 
   let currentTargetColumnId = null;
   let currentEditingCardId = null; 
   let selectedTaskColor = '#1D1D1F'; 
@@ -767,10 +894,11 @@
       innerHTML += `
         <select class="assignee-select">
           <option value="" disabled selected>Assign to...</option>
-          <option value="anna">Anna</option>
-          <option value="marc">Marc</option>
-          <option value="sophia">Sophia</option>
-          <option value="anyone">Anyone</option>
+          <option value="inc">INC</option>
+          <option value="mate">MATE</option>
+          <option value="zollo">Zollo</option>
+          <option value="clg">CLG</option>
+          <option value="tutti">Tutti</option>
         </select>
       `;
 
