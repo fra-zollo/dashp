@@ -168,10 +168,15 @@
   }
 
   .card-subtitle {
-    margin: 0 0 8px 0;
-    font-size: 12px;
+    margin: 0 0 10px 0;
+    font-size: 11px;
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: 600;
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 12px;
+    background: rgba(0,0,0,0.02);
   }
 
   .card-body {
@@ -696,120 +701,14 @@
   let currentEditingCardId = null; 
   let selectedTaskColor = '#1D1D1F'; 
 
-  // Firebase Init
-  const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'parma-dashboard';
-
-  let isFirebaseInitialized = false;
-  let isRemoteUpdate = false;
-  const boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board');
-
-  const initAuth = async () => {
-    try {
-      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-        await signInWithCustomToken(auth, __initial_auth_token);
-      } else {
-        await signInAnonymously(auth);
-      }
-    } catch(e) { console.error(e); }
-  };
-
-  onAuthStateChanged(auth, (user) => {
-    if (user && !isFirebaseInitialized) {
-      isFirebaseInitialized = true;
-      setupBoardSync();
-    }
-  });
-
-  initAuth();
-
-  // Parse UI state to JSON for Firebase
-  function getBoardState() {
-    const state = {};
-    document.querySelectorAll('.card-container').forEach(container => {
-      const colId = container.id;
-      state[colId] = [];
-      container.querySelectorAll('.card').forEach(card => {
-        state[colId].push({
-          id: card.id,
-          title: card.querySelector('.card-title')?.textContent || '',
-          color: card.querySelector('.card-title')?.getAttribute('data-color') || '#1D1D1F',
-          subtitle: card.querySelector('.card-subtitle')?.textContent || '',
-          body: card.querySelector('.card-body')?.innerHTML || '',
-          assignee: card.querySelector('.assignee-select')?.value || ''
-        });
-      });
-    });
-    return state;
-  }
-
-  // Render JSON from Firebase to UI
-  function renderBoardState(state) {
-    for (const [colId, cards] of Object.entries(state)) {
-      const container = document.getElementById(colId);
-      if (!container) continue;
-      container.innerHTML = ''; 
-      
-      cards.forEach(cardData => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.draggable = true;
-        card.id = cardData.id;
-        card.ondragstart = window.drag;
-
-        let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
-        if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
-        if (cardData.body) innerHTML += `<p class="card-body">${cardData.body}</p>`;
-
-        innerHTML += `
-          <select class="assignee-select">
-            <option value="" disabled ${!cardData.assignee ? 'selected' : ''}>Assegna a...</option>
-            <option value="inc" ${cardData.assignee === 'inc' ? 'selected' : ''}>INC</option>
-            <option value="mate" ${cardData.assignee === 'mate' ? 'selected' : ''}>MATE</option>
-            <option value="zollo" ${cardData.assignee === 'zollo' ? 'selected' : ''}>Zollo</option>
-            <option value="clg" ${cardData.assignee === 'clg' ? 'selected' : ''}>CLG</option>
-            <option value="comitato" ${cardData.assignee === 'comitato' ? 'selected' : ''}>Comitato</option>
-            <option value="tutti" ${cardData.assignee === 'tutti' ? 'selected' : ''}>Tutti</option>
-          </select>
-        `;
-
-        card.innerHTML = innerHTML;
-        container.appendChild(card);
-      });
-    }
-
-    // Keep IDs unique
-    const allCards = document.querySelectorAll('.card');
-    if (allCards.length > 0) {
-       const ids = Array.from(allCards).map(c => parseInt(c.id.replace('card', '')) || 0);
-       cardCounter = Math.max(...ids) + 1;
-    }
-  }
-
-  function setupBoardSync() {
-    onSnapshot(boardDocRef, (snapshot) => {
-      if (snapshot.exists()) {
-        isRemoteUpdate = true;
-        renderBoardState(snapshot.data());
-        setTimeout(() => isRemoteUpdate = false, 100);
-      } else {
-        // If it's a completely fresh start, save the hardcoded HTML state into Firebase
-        window.saveBoard();
-      }
-    }, (error) => console.error("Sync error", error));
-  }
-
+  // --- 1. Define UI Functions FIRST to prevent crashes from breaking the board ---
   window.saveBoard = async function() {
     if (!isFirebaseInitialized || isRemoteUpdate) return;
     try {
-      await setDoc(boardDocRef, getBoardState());
+      if (boardDocRef) await setDoc(boardDocRef, getBoardState());
     } catch(e) { console.error("Save error", e); }
   }
 
-  // --- Drag and Drop Logic ---
   window.allowDrop = function(ev) {
     ev.preventDefault();
   }
@@ -842,7 +741,7 @@
     if (dropZone) {
         dropZone.classList.remove('drag-over');
         dropZone.appendChild(draggedElement);
-        window.saveBoard(); // Save on drop
+        window.saveBoard(); 
     }
   }
 
@@ -851,21 +750,18 @@
     document.querySelectorAll('.card-container').forEach(c => c.classList.remove('drag-over'));
   });
 
-  // Listener to trigger save when assigning someone from dropdown
   document.addEventListener('change', function(e) {
     if (e.target.classList.contains('assignee-select')) {
       window.saveBoard();
     }
   });
 
-  // --- Clicking a card to edit it ---
   document.addEventListener('click', function(e) {
     const card = e.target.closest('.card');
     const isSelect = e.target.closest('.assignee-select'); 
     if (card && !isSelect) window.openEditModal(card);
   });
 
-  // --- Modal Logic ---
   window.selectColor = function(color, element) {
     selectedTaskColor = color;
     document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
@@ -940,7 +836,7 @@
       const card = document.getElementById(currentEditingCardId);
       if (card) {
         card.remove();
-        window.saveBoard(); // Save after deleting
+        window.saveBoard(); 
       }
     }
     window.closeModal();
@@ -992,7 +888,7 @@
       }
 
       window.closeModal();
-      window.saveBoard(); // Save after editing
+      window.saveBoard();
 
     } else {
       if (!currentTargetColumnId) return;
@@ -1028,9 +924,125 @@
       
       cardCounter++;
       window.closeModal();
-      window.saveBoard(); // Save after adding new
+      window.saveBoard(); 
     }
   }
+
+
+  // --- 2. Safely Initialize Firebase ---
+  let isFirebaseInitialized = false;
+  let isRemoteUpdate = false;
+  let boardDocRef = null;
+
+  try {
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    
+    // Check if we actually have a valid config before starting Firebase
+    if (Object.keys(firebaseConfig).length > 0) {
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const appId = typeof __app_id !== 'undefined' ? __app_id : 'parma-dashboard';
+      boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board');
+
+      const initAuth = async () => {
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+        } catch(e) { console.error(e); }
+      };
+
+      onAuthStateChanged(auth, (user) => {
+        if (user && !isFirebaseInitialized) {
+          isFirebaseInitialized = true;
+          setupBoardSync();
+        }
+      });
+
+      initAuth();
+      
+      function setupBoardSync() {
+        onSnapshot(boardDocRef, (snapshot) => {
+          if (snapshot.exists()) {
+            isRemoteUpdate = true;
+            renderBoardState(snapshot.data());
+            setTimeout(() => isRemoteUpdate = false, 100);
+          } else {
+            window.saveBoard();
+          }
+        }, (error) => console.error("Sync error", error));
+      }
+    }
+  } catch (error) {
+    console.warn("Firebase running locally without sync.", error);
+  }
+
+  // Parse UI state to JSON for Firebase
+  function getBoardState() {
+    const state = {};
+    document.querySelectorAll('.card-container').forEach(container => {
+      const colId = container.id;
+      state[colId] = [];
+      container.querySelectorAll('.card').forEach(card => {
+        state[colId].push({
+          id: card.id,
+          title: card.querySelector('.card-title')?.textContent || '',
+          color: card.querySelector('.card-title')?.getAttribute('data-color') || '#1D1D1F',
+          subtitle: card.querySelector('.card-subtitle')?.textContent || '',
+          body: card.querySelector('.card-body')?.innerHTML || '',
+          assignee: card.querySelector('.assignee-select')?.value || ''
+        });
+      });
+    });
+    return state;
+  }
+
+  // Render JSON from Firebase to UI
+  function renderBoardState(state) {
+    for (const [colId, cards] of Object.entries(state)) {
+      const container = document.getElementById(colId);
+      if (!container) continue;
+      container.innerHTML = ''; 
+      
+      cards.forEach(cardData => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.draggable = true;
+        card.id = cardData.id;
+        card.ondragstart = window.drag;
+
+        let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
+        if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
+        if (cardData.body) innerHTML += `<p class="card-body">${cardData.body}</p>`;
+
+        innerHTML += `
+          <select class="assignee-select">
+            <option value="" disabled ${!cardData.assignee ? 'selected' : ''}>Assegna a...</option>
+            <option value="inc" ${cardData.assignee === 'inc' ? 'selected' : ''}>INC</option>
+            <option value="mate" ${cardData.assignee === 'mate' ? 'selected' : ''}>MATE</option>
+            <option value="zollo" ${cardData.assignee === 'zollo' ? 'selected' : ''}>Zollo</option>
+            <option value="clg" ${cardData.assignee === 'clg' ? 'selected' : ''}>CLG</option>
+            <option value="comitato" ${cardData.assignee === 'comitato' ? 'selected' : ''}>Comitato</option>
+            <option value="tutti" ${cardData.assignee === 'tutti' ? 'selected' : ''}>Tutti</option>
+          </select>
+        `;
+
+        card.innerHTML = innerHTML;
+        container.appendChild(card);
+      });
+    }
+
+    // Keep IDs unique
+    const allCards = document.querySelectorAll('.card');
+    if (allCards.length > 0) {
+       const ids = Array.from(allCards).map(c => parseInt(c.id.replace('card', '')) || 0);
+       cardCounter = Math.max(...ids) + 1;
+    }
+  }
+
 </script>
 </body>
 </html>
