@@ -701,13 +701,95 @@
   let currentEditingCardId = null; 
   let selectedTaskColor = '#1D1D1F'; 
 
+  // --- Parse UI state to JSON ---
+  function getBoardState() {
+    const state = {};
+    document.querySelectorAll('.card-container').forEach(container => {
+      const colId = container.id;
+      state[colId] = [];
+      container.querySelectorAll('.card').forEach(card => {
+        state[colId].push({
+          id: card.id,
+          title: card.querySelector('.card-title')?.textContent || '',
+          color: card.querySelector('.card-title')?.getAttribute('data-color') || '#1D1D1F',
+          subtitle: card.querySelector('.card-subtitle')?.textContent || '',
+          body: card.querySelector('.card-body')?.innerHTML || '',
+          assignee: card.querySelector('.assignee-select')?.value || ''
+        });
+      });
+    });
+    return state;
+  }
+
+  // --- Render JSON to UI ---
+  function renderBoardState(state) {
+    for (const [colId, cards] of Object.entries(state)) {
+      const container = document.getElementById(colId);
+      if (!container) continue;
+      container.innerHTML = ''; 
+      
+      cards.forEach(cardData => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.draggable = true;
+        card.id = cardData.id;
+        card.ondragstart = window.drag;
+
+        let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
+        if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
+        if (cardData.body) innerHTML += `<p class="card-body">${cardData.body}</p>`;
+
+        innerHTML += `
+          <select class="assignee-select">
+            <option value="" disabled ${!cardData.assignee ? 'selected' : ''}>Assegna a...</option>
+            <option value="inc" ${cardData.assignee === 'inc' ? 'selected' : ''}>INC</option>
+            <option value="mate" ${cardData.assignee === 'mate' ? 'selected' : ''}>MATE</option>
+            <option value="zollo" ${cardData.assignee === 'zollo' ? 'selected' : ''}>Zollo</option>
+            <option value="clg" ${cardData.assignee === 'clg' ? 'selected' : ''}>CLG</option>
+            <option value="comitato" ${cardData.assignee === 'comitato' ? 'selected' : ''}>Comitato</option>
+            <option value="tutti" ${cardData.assignee === 'tutti' ? 'selected' : ''}>Tutti</option>
+          </select>
+        `;
+
+        card.innerHTML = innerHTML;
+        container.appendChild(card);
+      });
+    }
+
+    const allCards = document.querySelectorAll('.card');
+    if (allCards.length > 0) {
+       const ids = Array.from(allCards).map(c => parseInt(c.id.replace('card', '')) || 0);
+       cardCounter = Math.max(...ids) + 1;
+    }
+  }
+
   // --- 1. Define UI Functions FIRST to prevent crashes from breaking the board ---
   window.saveBoard = async function() {
-    if (!isFirebaseInitialized || isRemoteUpdate) return;
+    if (isRemoteUpdate) return;
+    
+    const state = getBoardState();
+    
+    // ALWAYS save to LocalStorage as a fallback
     try {
-      if (boardDocRef) await setDoc(boardDocRef, getBoardState());
-    } catch(e) { console.error("Save error", e); }
+      localStorage.setItem('parmaDashboardState', JSON.stringify(state));
+    } catch(e) { console.warn("Local storage save failed", e); }
+
+    // Save to Firebase if available
+    try {
+      if (isFirebaseInitialized && boardDocRef) {
+        await setDoc(boardDocRef, state);
+      }
+    } catch(e) { console.error("Firebase save error", e); }
   }
+
+  // Load from LocalStorage instantly before Firebase even boots up
+  try {
+    const localState = localStorage.getItem('parmaDashboardState');
+    if (localState) {
+      renderBoardState(JSON.parse(localState));
+    }
+  } catch(e) { console.warn("Local storage load failed", e); }
+
 
   window.allowDrop = function(ev) {
     ev.preventDefault();
@@ -750,6 +832,7 @@
     document.querySelectorAll('.card-container').forEach(c => c.classList.remove('drag-over'));
   });
 
+  // Listener for assignee dropdown changes
   document.addEventListener('change', function(e) {
     if (e.target.classList.contains('assignee-select')) {
       window.saveBoard();
@@ -937,7 +1020,6 @@
   try {
     const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
     
-    // Check if we actually have a valid config before starting Firebase
     if (Object.keys(firebaseConfig).length > 0) {
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -968,7 +1050,14 @@
         onSnapshot(boardDocRef, (snapshot) => {
           if (snapshot.exists()) {
             isRemoteUpdate = true;
-            renderBoardState(snapshot.data());
+            const data = snapshot.data();
+            renderBoardState(data);
+            
+            // Sync local storage so it matches cloud perfectly
+            try {
+               localStorage.setItem('parmaDashboardState', JSON.stringify(data));
+            } catch(e) {}
+
             setTimeout(() => isRemoteUpdate = false, 100);
           } else {
             window.saveBoard();
@@ -978,69 +1067,6 @@
     }
   } catch (error) {
     console.warn("Firebase running locally without sync.", error);
-  }
-
-  // Parse UI state to JSON for Firebase
-  function getBoardState() {
-    const state = {};
-    document.querySelectorAll('.card-container').forEach(container => {
-      const colId = container.id;
-      state[colId] = [];
-      container.querySelectorAll('.card').forEach(card => {
-        state[colId].push({
-          id: card.id,
-          title: card.querySelector('.card-title')?.textContent || '',
-          color: card.querySelector('.card-title')?.getAttribute('data-color') || '#1D1D1F',
-          subtitle: card.querySelector('.card-subtitle')?.textContent || '',
-          body: card.querySelector('.card-body')?.innerHTML || '',
-          assignee: card.querySelector('.assignee-select')?.value || ''
-        });
-      });
-    });
-    return state;
-  }
-
-  // Render JSON from Firebase to UI
-  function renderBoardState(state) {
-    for (const [colId, cards] of Object.entries(state)) {
-      const container = document.getElementById(colId);
-      if (!container) continue;
-      container.innerHTML = ''; 
-      
-      cards.forEach(cardData => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.draggable = true;
-        card.id = cardData.id;
-        card.ondragstart = window.drag;
-
-        let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
-        if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
-        if (cardData.body) innerHTML += `<p class="card-body">${cardData.body}</p>`;
-
-        innerHTML += `
-          <select class="assignee-select">
-            <option value="" disabled ${!cardData.assignee ? 'selected' : ''}>Assegna a...</option>
-            <option value="inc" ${cardData.assignee === 'inc' ? 'selected' : ''}>INC</option>
-            <option value="mate" ${cardData.assignee === 'mate' ? 'selected' : ''}>MATE</option>
-            <option value="zollo" ${cardData.assignee === 'zollo' ? 'selected' : ''}>Zollo</option>
-            <option value="clg" ${cardData.assignee === 'clg' ? 'selected' : ''}>CLG</option>
-            <option value="comitato" ${cardData.assignee === 'comitato' ? 'selected' : ''}>Comitato</option>
-            <option value="tutti" ${cardData.assignee === 'tutti' ? 'selected' : ''}>Tutti</option>
-          </select>
-        `;
-
-        card.innerHTML = innerHTML;
-        container.appendChild(card);
-      });
-    }
-
-    // Keep IDs unique
-    const allCards = document.querySelectorAll('.card');
-    if (allCards.length > 0) {
-       const ids = Array.from(allCards).map(c => parseInt(c.id.replace('card', '')) || 0);
-       cardCounter = Math.max(...ids) + 1;
-    }
   }
 
 </script>
