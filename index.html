@@ -384,9 +384,9 @@
       <div class="column-header">
         <h2 class="column-title">Latest updates</h2>
       </div>
-      <div class="card-container" id="updates" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="card-container" id="updates" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)">
         
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card1">
+        <div class="card" draggable="true" ondragstart="window.drag(event)" id="card1">
           <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Strategia Brand Identity</p>
           <p class="card-subtitle">Riassunto riunione 22/02/2026</p>
           <p class="card-body">MATE ha evidenziato la necessità di un'identità forte che vada oltre la sigla "EYC". Volontà di risolvere alcune criticità del logo. Apprezzata l'idea di usare la simbologia, anche quella delle "4 vie".</p>
@@ -401,7 +401,7 @@
           </select>
         </div>
 
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card2">
+        <div class="card" draggable="true" ondragstart="window.drag(event)" id="card2">
           <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Gestione Media e Portavoci</p>
           <p class="card-body">- Media tradizionali: Assessora Aimi e rappresentante giovani (formazione INC).<br>- Social Media: approccio corale, assegnare giovani a ogni "piazza".</p>
           <select class="assignee-select">
@@ -415,7 +415,7 @@
           </select>
         </div>
 
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card3">
+        <div class="card" draggable="true" ondragstart="window.drag(event)" id="card3">
           <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Ruoli e Supervisione</p>
           <p class="card-body">INC manterrà stabilmente il ruolo di riferimento principale per la supervisione strategica e dei contenuti.</p>
           <select class="assignee-select">
@@ -430,7 +430,7 @@
         </div>
 
       </div>
-      <button class="add-btn" onclick="openAddModal('updates')">+ Add update</button>
+      <button class="add-btn" onclick="window.openAddModal('updates')">+ Add update</button>
     </div>
 
     <!-- Column 2: To Do List -->
@@ -441,9 +441,9 @@
       <div class="split-board">
         <div class="sub-column">
           <h3 class="sub-column-title">Short Term</h3>
-          <div class="card-container" id="todo-short" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+          <div class="card-container" id="todo-short" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)">
             
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card4">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card4">
               <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Grafica e Identità</p>
               <p class="card-subtitle">Entro questa settimana</p>
               <p class="card-body">MATE definisce la timeline di sviluppo con i grafici vincitori, apporta gli aggiustamenti al logo e inizia a "esplodere" brand identity. Creare nuova carta intestata.</p>
@@ -458,7 +458,7 @@
               </select>
             </div>
 
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card5">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card5">
               <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Sito Web e Concept</p>
               <p class="card-body">MATE e Zollo mettono online un sito web temporaneo. Feedback con il CLG sulla brand identity e sui claim.</p>
               <select class="assignee-select">
@@ -472,7 +472,7 @@
               </select>
             </div>
 
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card6">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card6">
               <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Task Riunione Mercoledì</p>
               <p class="card-body">- Decidere identità visiva "di transizione".<br>- Scegliere tool gestionale calendario/materiali.<br>- Calendarizzare confronto Comitato.<br>- Definire specifiche digitali.</p>
               <select class="assignee-select">
@@ -486,7 +486,7 @@
               </select>
             </div>
 
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card7">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card7">
               <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Team Volontari</p>
               <p class="card-subtitle">Avvio Immediato</p>
               <p class="card-body">Creare il gruppo WhatsApp, allargare la base dei volontari e iniziare a lavorare con il supporto di editing di Zollo.</p>
@@ -502,14 +502,14 @@
             </div>
 
           </div>
-          <button class="add-btn" onclick="openAddModal('todo-short')">+ Add short term</button>
+          <button class="add-btn" onclick="window.openAddModal('todo-short')">+ Add short term</button>
         </div>
         
         <div class="sub-column">
           <h3 class="sub-column-title">Long Term</h3>
-          <div class="card-container" id="todo-long" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+          <div class="card-container" id="todo-long" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)">
             
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card8">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card8">
               <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Evento Media di Lancio</p>
               <p class="card-subtitle">Settembre 2026</p>
               <p class="card-body">Organizzare un grande evento invitando la stampa nazionale ed europea. Preparare in anticipo materiali e storie.</p>
@@ -524,7 +524,7 @@
               </select>
             </div>
 
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card9">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card9">
               <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Lancio Sito Web Ufficiale</p>
               <p class="card-subtitle">Settembre 2026</p>
               <p class="card-body">Pubblicare il nuovo sito definitivo, aggiornato e pienamente operativo. Fissare call per elementi tecnici.</p>
@@ -539,7 +539,7 @@
               </select>
             </div>
 
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card10">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card10">
               <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Team Content-Creators</p>
               <p class="card-subtitle">Sett 2026 in poi</p>
               <p class="card-body">Guidare l'evoluzione del gruppo di volontari fino alla creazione del "gruppo di giovani dell'hub creativo". Valutare tirocini. Strutturare call.</p>
@@ -554,7 +554,7 @@
               </select>
             </div>
 
-            <div class="card" draggable="true" ondragstart="drag(event)" id="card11">
+            <div class="card" draggable="true" ondragstart="window.drag(event)" id="card11">
               <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Avvio Anno Capitale</p>
               <p class="card-subtitle">Da Settembre in poi</p>
               <p class="card-body">Essere pronti a regime con la task force di comunicazione.</p>
@@ -570,7 +570,7 @@
             </div>
 
           </div>
-          <button class="add-btn" onclick="openAddModal('todo-long')">+ Add long term</button>
+          <button class="add-btn" onclick="window.openAddModal('todo-long')">+ Add long term</button>
         </div>
       </div>
     </div>
@@ -580,9 +580,9 @@
       <div class="column-header">
         <h2 class="column-title">Next events</h2>
       </div>
-      <div class="card-container" id="events" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="card-container" id="events" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)">
         
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card12">
+        <div class="card" draggable="true" ondragstart="window.drag(event)" id="card12">
           <p class="card-title" style="color: #AF52DE;" data-color="#AF52DE">Evento con Ministro Zangrillo</p>
           <p class="card-subtitle">3 Marzo 2026</p>
           <p class="card-body">INC raccoglie e prepara i testi per la stampa.</p>
@@ -597,7 +597,7 @@
           </select>
         </div>
 
-        <div class="card" draggable="true" ondragstart="drag(event)" id="card13">
+        <div class="card" draggable="true" ondragstart="window.drag(event)" id="card13">
           <p class="card-title" style="color: #AF52DE;" data-color="#AF52DE">Workshop Universitario</p>
           <p class="card-subtitle">6 Marzo 2026</p>
           <p class="card-body">140 giovani europei. Zollo attiva subito i volontari CLG per formare un gruppo di comunicazione operativo temporaneo.</p>
@@ -613,7 +613,7 @@
         </div>
 
       </div>
-      <button class="add-btn" onclick="openAddModal('events')">+ Add event</button>
+      <button class="add-btn" onclick="window.openAddModal('events')">+ Add event</button>
     </div>
 
     <!-- Column 4: Piano Editoriale -->
@@ -621,10 +621,10 @@
       <div class="column-header">
         <h2 class="column-title">Piano editoriale</h2>
       </div>
-      <div class="card-container" id="editoriale" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="card-container" id="editoriale" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)">
         <!-- Empty drop zone -->
       </div>
-      <button class="add-btn" onclick="openAddModal('editoriale')">+ Add post</button>
+      <button class="add-btn" onclick="window.openAddModal('editoriale')">+ Add post</button>
     </div>
 
     <!-- Column 5: Info Importanti -->
@@ -632,10 +632,10 @@
       <div class="column-header">
         <h2 class="column-title">info importanti</h2>
       </div>
-      <div class="card-container" id="info" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="card-container" id="info" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)">
         <!-- Empty drop zone -->
       </div>
-      <button class="add-btn" onclick="openAddModal('info')">+ Add info</button>
+      <button class="add-btn" onclick="window.openAddModal('info')">+ Add info</button>
     </div>
 
   </div>
@@ -648,12 +648,12 @@
     
     <div class="input-group">
       <label>Title</label>
-      <input type="text" id="taskInput" placeholder="Task name or title..." onkeypress="handleKeyPress(event)">
+      <input type="text" id="taskInput" placeholder="Task name or title..." onkeypress="window.handleKeyPress(event)">
     </div>
 
     <div class="input-group">
       <label>Subtitle / Date (Optional)</label>
-      <input type="text" id="taskSubtitle" placeholder="e.g. 24 Oct or Team Meeting" onkeypress="handleKeyPress(event)">
+      <input type="text" id="taskSubtitle" placeholder="e.g. 24 Oct or Team Meeting" onkeypress="window.handleKeyPress(event)">
     </div>
 
     <div class="input-group">
@@ -664,22 +664,22 @@
     <div class="input-group">
       <label>Title Color</label>
       <div class="color-picker">
-        <div class="color-swatch selected" data-color="#1D1D1F" style="background: #1D1D1F;" onclick="selectColor('#1D1D1F', this)"></div>
-        <div class="color-swatch" data-color="#FF3B30" style="background: #FF3B30;" onclick="selectColor('#FF3B30', this)"></div>
-        <div class="color-swatch" data-color="#FF9500" style="background: #FF9500;" onclick="selectColor('#FF9500', this)"></div>
-        <div class="color-swatch" data-color="#34C759" style="background: #34C759;" onclick="selectColor('#34C759', this)"></div>
-        <div class="color-swatch" data-color="#007AFF" style="background: #007AFF;" onclick="selectColor('#007AFF', this)"></div>
-        <div class="color-swatch" data-color="#AF52DE" style="background: #AF52DE;" onclick="selectColor('#AF52DE', this)"></div>
-        <div class="color-swatch" data-color="#FF2D55" style="background: #FF2D55;" onclick="selectColor('#FF2D55', this)"></div>
+        <div class="color-swatch selected" data-color="#1D1D1F" style="background: #1D1D1F;" onclick="window.selectColor('#1D1D1F', this)"></div>
+        <div class="color-swatch" data-color="#FF3B30" style="background: #FF3B30;" onclick="window.selectColor('#FF3B30', this)"></div>
+        <div class="color-swatch" data-color="#FF9500" style="background: #FF9500;" onclick="window.selectColor('#FF9500', this)"></div>
+        <div class="color-swatch" data-color="#34C759" style="background: #34C759;" onclick="window.selectColor('#34C759', this)"></div>
+        <div class="color-swatch" data-color="#007AFF" style="background: #007AFF;" onclick="window.selectColor('#007AFF', this)"></div>
+        <div class="color-swatch" data-color="#AF52DE" style="background: #AF52DE;" onclick="window.selectColor('#AF52DE', this)"></div>
+        <div class="color-swatch" data-color="#FF2D55" style="background: #FF2D55;" onclick="window.selectColor('#FF2D55', this)"></div>
       </div>
     </div>
 
     <div class="modal-actions">
       <!-- Delete Button (Only shown when editing) -->
-      <button class="modal-btn cancel" id="deleteTaskBtn" style="display: none; color: #FF3B30; margin-right: auto;" onclick="deleteTask()">Delete</button>
+      <button class="modal-btn cancel" id="deleteTaskBtn" style="display: none; color: #FF3B30; margin-right: auto;" onclick="window.deleteTask()">Delete</button>
       
-      <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-btn primary" id="modalSubmitBtn" onclick="confirmTask()">Add Task</button>
+      <button class="modal-btn cancel" onclick="window.closeModal()">Cancel</button>
+      <button class="modal-btn primary" id="modalSubmitBtn" onclick="window.confirmTask()">Add Task</button>
     </div>
   </div>
 </div>
@@ -758,7 +758,7 @@
         card.className = 'card';
         card.draggable = true;
         card.id = cardData.id;
-        card.ondragstart = drag;
+        card.ondragstart = window.drag;
 
         let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
         if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
