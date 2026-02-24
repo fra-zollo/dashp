@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple-Style Kanban CRM</title>
+<style>
+  /* --- Apple-Style Design Tokens --- */
+  :root {
+    --bg-color: #F5F5F7; 
+    --column-bg: rgba(255, 255, 255, 0.6);
+    --card-bg: #FFFFFF;
+    --text-primary: #1D1D1F;
+    --text-secondary: #86868B;
+    --border-radius-lg: 18px;
+    --border-radius-sm: 10px;
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+  }
+
+  /* --- Top Navigation / Header --- */
+  .app-header {
+    padding: 20px 40px;
+    background: rgba(245, 245, 247, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    z-index: 10;
+  }
+  
+  .app-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+
+  /* --- Board & Columns --- */
+  .board-wrapper {
+    flex: 1;
+    padding: 40px;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  .board {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    min-width: max-content; 
+  }
+
+  .column {
+    background: var(--column-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    min-width: 320px;
+    width: 320px;
+    resize: horizontal; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid rgba(255,255,255,0.4);
+    min-height: 400px;
+  }
+
+  .col-todo {
+    min-width: 600px;
+    width: 600px;
+  }
+
+  /* --- Headers & Colors --- */
+  .column-header {
+    margin-bottom: 8px;
+  }
+  
+  .column-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  .col-updates .column-title { color: #007AFF; }
+  .col-todo .column-title { color: #FF9500; }   
+  .col-events .column-title { color: #AF52DE; } 
+  .col-editoriale .column-title { color: #FF2D55; }
+  .col-info .column-title { color: #34C759; }   
+
+  /* --- Split Board Logic --- */
+  .split-board {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    height: 100%;
+  }
+
+  .sub-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 260px;
+  }
+
+  .sub-column-title {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* --- Cards & Tasks --- */
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 50px; 
+    padding-bottom: 12px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-sm);
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, outline 0.2s ease;
+    border: 1px solid rgba(0,0,0,0.03);
+    position: relative;
+  }
+
+  /* Hover effect to show clickability for editing */
+  .card:hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .card:active {
+    cursor: grabbing;
+    transform: scale(1.02);
+    box-shadow: var(--shadow-hover);
+    z-index: 100;
+  }
+
+  .card-title {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .card-subtitle {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .card-body {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: #333336;
+    line-height: 1.4;
+    white-space: pre-wrap; 
+  }
+
+  /* --- Assignee Dropdown --- */
+  .assignee-select {
+    appearance: none;
+    background-color: #F5F5F7;
+    border: 1px solid rgba(0,0,0,0.05);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s;
+    margin-top: 8px; 
+  }
+
+  .assignee-select:hover {
+    background-color: #E8E8ED;
+    color: var(--text-primary);
+  }
+
+  .assignee-select:focus {
+    box-shadow: 0 0 0 2px #007AFF;
+    color: var(--text-primary);
+  }
+
+  /* --- Add Button --- */
+  .add-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    padding: 12px 0 0 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.2s;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    margin-top: auto;
+  }
+
+  .add-btn:hover {
+    color: var(--text-primary);
+  }
+
+  /* --- Custom Modal --- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal-content {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-hover);
+    width: 90%;
+    max-width: 450px;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+  }
+
+  .modal-overlay.active .modal-content {
+    transform: scale(1);
+  }
+
+  .modal-content h3 {
+    margin: 0 0 24px 0;
+    font-size: 20px;
+  }
+
+  .input-group {
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .modal-content input, .modal-content textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #E5E5EA;
+    border-radius: var(--border-radius-sm);
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  .modal-content input:focus, .modal-content textarea:focus {
+    border-color: #007AFF;
+  }
+
+  /* Color Picker UI */
+  .color-picker {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .color-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .color-swatch.selected {
+    transform: scale(1.15);
+    border-color: rgba(0,0,0,0.1);
+    box-shadow: 0 0 0 3px white inset;
+  }
+
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .modal-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background-color 0.2s;
+  }
+
+  .modal-btn.cancel {
+    background: #F5F5F7;
+    color: var(--text-primary);
+  }
+
+  .modal-btn.cancel:hover {
+    background: #E8E8ED;
+  }
+
+  .modal-btn.primary {
+    background: #007AFF;
+    color: white;
+  }
+
+  .modal-btn.primary:hover {
+    background: #0066D6;
+  }
+  
+  .card-container.drag-over {
+    background: rgba(0,0,0,0.02);
+    border-radius: var(--border-radius-sm);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1 class="app-title">Company Workspace</h1>
+</div>
+
+<div class="board-wrapper">
+  <div class="board">
+    
+    <!-- Column 1: Latest Updates -->
+    <div class="column col-updates">
+      <div class="column-header">
+        <h2 class="column-title">Latest updates</h2>
+      </div>
+      <div class="card-container" id="updates" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <!-- Notice the added data-color attributes for editing memory -->
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card1">
+          <p class="card-title" style="color: #007AFF;" data-color="#007AFF">Q3 Metrics Report Published</p>
+          <p class="card-subtitle">Today at 9:00 AM</p>
+          <p class="card-body">The new report is available on the shared drive. Please review before the afternoon meeting.</p>
+          <select class="assignee-select">
+            <option value="" disabled>Assign to...</option>
+            <option value="anna" selected>Anna</option>
+            <option value="marc">Marc</option>
+            <option value="sophia">Sophia</option>
+            <option value="anyone">Anyone</option>
+          </select>
+        </div>
+      </div>
+      <button class="add-btn" onclick="openAddModal('updates')">+ Add update</button>
+    </div>
+
+    <!-- Column 2: To Do List -->
+    <div class="column col-todo">
+      <div class="column-header">
+        <h2 class="column-title">To do list</h2>
+      </div>
+      <div class="split-board">
+        <div class="sub-column">
+          <h3 class="sub-column-title">Short Term</h3>
+          <div class="card-container" id="todo-short" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card2">
+              <p class="card-title" style="color: #FF9500;" data-color="#FF9500">Email client regarding brief</p>
+              <select class="assignee-select">
+                <option value="" disabled selected>Assign to...</option>
+                <option value="anna">Anna</option>
+                <option value="marc">Marc</option>
+                <option value="sophia">Sophia</option>
+                <option value="anyone">Anyone</option>
+              </select>
+            </div>
+          </div>
+          <button class="add-btn" onclick="openAddModal('todo-short')">+ Add short term</button>
+        </div>
+        
+        <div class="sub-column">
+          <h3 class="sub-column-title">Long Term</h3>
+          <div class="card-container" id="todo-long" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="card" draggable="true" ondragstart="drag(event)" id="card3">
+              <p class="card-title" style="color: #1D1D1F;" data-color="#1D1D1F">Website Redesign 2025</p>
+              <p class="card-subtitle">Due Q1</p>
+              <p class="card-body">Start gathering inspiration for the UI refresh.</p>
+              <select class="assignee-select">
+                <option value="" disabled>Assign to...</option>
+                <option value="anna">Anna</option>
+                <option value="marc">Marc</option>
+                <option value="sophia">Sophia</option>
+                <option value="anyone" selected>Anyone</option>
+              </select>
+            </div>
+          </div>
+          <button class="add-btn" onclick="openAddModal('todo-long')">+ Add long term</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3: Next Events -->
+    <div class="column col-events">
+      <div class="column-header">
+        <h2 class="column-title">Next events</h2>
+      </div>
+      <div class="card-container" id="events" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <button class="add-btn" onclick="openAddModal('events')">+ Add event</button>
+    </div>
+
+    <!-- Column 4: Piano Editoriale -->
+    <div class="column col-editoriale">
+      <div class="column-header">
+        <h2 class="column-title">Piano editoriale</h2>
+      </div>
+      <div class="card-container" id="editoriale" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card4">
+          <p class="card-title" style="color: #AF52DE;" data-color="#AF52DE">Instagram Post: Behind the scenes</p>
+          <p class="card-subtitle">Friday 15th</p>
+          <select class="assignee-select">
+            <option value="" disabled selected>Assign to...</option>
+            <option value="anna">Anna</option>
+            <option value="marc">Marc</option>
+            <option value="sophia">Sophia</option>
+            <option value="anyone">Anyone</option>
+          </select>
+        </div>
+      </div>
+      <button class="add-btn" onclick="openAddModal('editoriale')">+ Add post</button>
+    </div>
+
+    <!-- Column 5: Info Importanti -->
+    <div class="column col-info">
+      <div class="column-header">
+        <h2 class="column-title">info importanti</h2>
+      </div>
+      <div class="card-container" id="info" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div class="card" draggable="true" ondragstart="drag(event)" id="card5">
+          <p class="card-title" style="color: #34C759;" data-color="#34C759">Office Wifi Password</p>
+          <p class="card-body">Network: Guest_5G<br>Pass: AppleCRM2024!</p>
+          <select class="assignee-select">
+            <option value="" disabled selected>Assign to...</option>
+            <option value="anna">Anna</option>
+            <option value="marc">Marc</option>
+            <option value="sophia">Sophia</option>
+            <option value="anyone">Anyone</option>
+          </select>
+        </div>
+      </div>
+      <button class="add-btn" onclick="openAddModal('info')">+ Add info</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Enhanced Modal for Adding and Editing -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Add New Task</h3>
+    
+    <div class="input-group">
+      <label>Title</label>
+      <input type="text" id="taskInput" placeholder="Task name or title..." onkeypress="handleKeyPress(event)">
+    </div>
+
+    <div class="input-group">
+      <label>Subtitle / Date (Optional)</label>
+      <input type="text" id="taskSubtitle" placeholder="e.g. 24 Oct or Team Meeting" onkeypress="handleKeyPress(event)">
+    </div>
+
+    <div class="input-group">
+      <label>Description (Optional)</label>
+      <textarea id="taskBody" placeholder="Add some details, links, or notes..." rows="3"></textarea>
+    </div>
+
+    <div class="input-group">
+      <label>Title Color</label>
+      <div class="color-picker">
+        <div class="color-swatch selected" data-color="#1D1D1F" style="background: #1D1D1F;" onclick="selectColor('#1D1D1F', this)"></div>
+        <div class="color-swatch" data-color="#FF3B30" style="background: #FF3B30;" onclick="selectColor('#FF3B30', this)"></div>
+        <div class="color-swatch" data-color="#FF9500" style="background: #FF9500;" onclick="selectColor('#FF9500', this)"></div>
+        <div class="color-swatch" data-color="#34C759" style="background: #34C759;" onclick="selectColor('#34C759', this)"></div>
+        <div class="color-swatch" data-color="#007AFF" style="background: #007AFF;" onclick="selectColor('#007AFF', this)"></div>
+        <div class="color-swatch" data-color="#AF52DE" style="background: #AF52DE;" onclick="selectColor('#AF52DE', this)"></div>
+        <div class="color-swatch" data-color="#FF2D55" style="background: #FF2D55;" onclick="selectColor('#FF2D55', this)"></div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <!-- Delete Button (Only shown when editing) -->
+      <button class="modal-btn cancel" id="deleteTaskBtn" style="display: none; color: #FF3B30; margin-right: auto;" onclick="deleteTask()">Delete</button>
+      
+      <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn primary" id="modalSubmitBtn" onclick="confirmTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- Drag and Drop Logic ---
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+    setTimeout(() => { ev.target.style.opacity = '0.5'; }, 0);
+  }
+
+  function dragEnter(ev) {
+    ev.preventDefault();
+    const dropZone = ev.target.closest('.card-container');
+    if (dropZone) dropZone.classList.add('drag-over');
+  }
+
+  function dragLeave(ev) {
+    const dropZone = ev.target.closest('.card-container');
+    if (dropZone) dropZone.classList.remove('drag-over');
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const draggedElement = document.getElementById(data);
+    
+    draggedElement.style.opacity = '1';
+    const dropZone = ev.target.closest('.card-container');
+    
+    if (dropZone) {
+        dropZone.classList.remove('drag-over');
+        dropZone.appendChild(draggedElement);
+    }
+  }
+
+  document.addEventListener('dragend', function(ev) {
+    if (ev.target.classList.contains('card')) ev.target.style.opacity = '1';
+    document.querySelectorAll('.card-container').forEach(c => c.classList.remove('drag-over'));
+  });
+
+  // --- Clicking a card to edit it ---
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.card');
+    const isSelect = e.target.closest('.assignee-select'); // ignore clicks on the assignee dropdown
+    
+    if (card && !isSelect) {
+      openEditModal(card);
+    }
+  });
+
+
+  // --- Modal Logic ---
+  let cardCounter = 6; 
+  let currentTargetColumnId = null;
+  let currentEditingCardId = null; 
+  let selectedTaskColor = '#1D1D1F'; 
+
+  function selectColor(color, element) {
+    selectedTaskColor = color;
+    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+  }
+
+  function openAddModal(columnId) {
+    currentTargetColumnId = columnId;
+    currentEditingCardId = null; // We are adding, not editing
+    
+    const modal = document.getElementById('taskModal');
+    document.getElementById('modalTitle').textContent = 'Add New Task';
+    document.getElementById('modalSubmitBtn').textContent = 'Add Task';
+    document.getElementById('deleteTaskBtn').style.display = 'none';
+
+    // Reset fields
+    document.getElementById('taskInput').value = '';
+    document.getElementById('taskSubtitle').value = '';
+    document.getElementById('taskBody').value = '';
+    
+    // Reset Color Picker
+    selectedTaskColor = '#1D1D1F';
+    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
+    document.querySelector('.color-swatch[data-color="#1D1D1F"]').classList.add('selected');
+
+    modal.classList.add('active');
+    setTimeout(() => document.getElementById('taskInput').focus(), 50); 
+  }
+
+  function openEditModal(card) {
+    currentTargetColumnId = null;
+    currentEditingCardId = card.id;
+    
+    const modal = document.getElementById('taskModal');
+    document.getElementById('modalTitle').textContent = 'Edit Task';
+    document.getElementById('modalSubmitBtn').textContent = 'Save Changes';
+    document.getElementById('deleteTaskBtn').style.display = 'block';
+
+    // Extract data from the clicked card
+    const titleEl = card.querySelector('.card-title');
+    const subtitleEl = card.querySelector('.card-subtitle');
+    const bodyEl = card.querySelector('.card-body');
+
+    document.getElementById('taskInput').value = titleEl ? titleEl.textContent : '';
+    document.getElementById('taskSubtitle').value = subtitleEl ? subtitleEl.textContent : '';
+    
+    if (bodyEl) {
+      // Convert HTML <br> back to textarea newlines
+      document.getElementById('taskBody').value = bodyEl.innerHTML.replace(/<br\s*[\/]?>/gi, "\n");
+    } else {
+      document.getElementById('taskBody').value = '';
+    }
+
+    // Extract Color
+    selectedTaskColor = titleEl ? (titleEl.getAttribute('data-color') || '#1D1D1F') : '#1D1D1F';
+    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
+    const swatch = document.querySelector(`.color-swatch[data-color="${selectedTaskColor}"]`);
+    if (swatch) {
+      swatch.classList.add('selected');
+    } else {
+      document.querySelector('.color-swatch[data-color="#1D1D1F"]').classList.add('selected');
+    }
+
+    modal.classList.add('active');
+    setTimeout(() => document.getElementById('taskInput').focus(), 50);
+  }
+
+  function closeModal() {
+    document.getElementById('taskModal').classList.remove('active');
+    currentTargetColumnId = null;
+    currentEditingCardId = null;
+  }
+
+  function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      confirmTask();
+    }
+  }
+
+  function deleteTask() {
+    if (currentEditingCardId) {
+      const card = document.getElementById(currentEditingCardId);
+      if (card) {
+        card.remove();
+      }
+    }
+    closeModal();
+  }
+
+  function confirmTask() {
+    const title = document.getElementById('taskInput').value.trim();
+    const subtitle = document.getElementById('taskSubtitle').value.trim();
+    const body = document.getElementById('taskBody').value.trim();
+    
+    if (!title) return;
+
+    if (currentEditingCardId) {
+      // --- UPDATE EXISTING CARD ---
+      const card = document.getElementById(currentEditingCardId);
+      
+      // Update Title
+      let titleEl = card.querySelector('.card-title');
+      if (!titleEl) {
+          titleEl = document.createElement('p');
+          titleEl.className = 'card-title';
+          card.insertBefore(titleEl, card.firstChild);
+      }
+      titleEl.textContent = title;
+      titleEl.style.color = selectedTaskColor;
+      titleEl.setAttribute('data-color', selectedTaskColor);
+
+      // Update Subtitle
+      let subtitleEl = card.querySelector('.card-subtitle');
+      if (subtitle) {
+          if (!subtitleEl) {
+              subtitleEl = document.createElement('p');
+              subtitleEl.className = 'card-subtitle';
+              titleEl.insertAdjacentElement('afterend', subtitleEl);
+          }
+          subtitleEl.textContent = subtitle;
+      } else if (subtitleEl) {
+          subtitleEl.remove();
+      }
+
+      // Update Body
+      let bodyEl = card.querySelector('.card-body');
+      if (body) {
+          if (!bodyEl) {
+              bodyEl = document.createElement('p');
+              bodyEl.className = 'card-body';
+              const selectEl = card.querySelector('.assignee-select');
+              card.insertBefore(bodyEl, selectEl);
+          }
+          bodyEl.innerHTML = body.replace(/\n/g, '<br>');
+      } else if (bodyEl) {
+          bodyEl.remove();
+      }
+
+      closeModal();
+
+    } else {
+      // --- ADD NEW CARD ---
+      if (!currentTargetColumnId) return;
+      const container = document.getElementById(currentTargetColumnId);
+      
+      const newCard = document.createElement('div');
+      newCard.className = 'card';
+      newCard.draggable = true;
+      newCard.id = 'card' + cardCounter;
+      newCard.ondragstart = drag;
+
+      let innerHTML = `<p class="card-title" style="color: ${selectedTaskColor};" data-color="${selectedTaskColor}">${title}</p>`;
+      
+      if (subtitle) {
+        innerHTML += `<p class="card-subtitle">${subtitle}</p>`;
+      }
+      
+      if (body) {
+        const formattedBody = body.replace(/\n/g, '<br>');
+        innerHTML += `<p class="card-body">${formattedBody}</p>`;
+      }
+
+      innerHTML += `
+        <select class="assignee-select">
+          <option value="" disabled selected>Assign to...</option>
+          <option value="anna">Anna</option>
+          <option value="marc">Marc</option>
+          <option value="sophia">Sophia</option>
+          <option value="anyone">Anyone</option>
+        </select>
+      `;
+
+      newCard.innerHTML = innerHTML;
+      container.appendChild(newCard);
+      
+      cardCounter++;
+      closeModal();
+    }
+  }
+</script>
+</body>
+</html>
