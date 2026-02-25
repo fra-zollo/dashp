@@ -1036,7 +1036,10 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'parma-dashboard';
-    boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board');
+    
+    // CHANGED TO v2: This creates a completely new, clean database file 
+    // and forces it to save the HTML cards instantly.
+    boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board_v2');
 
     const initFirebase = async () => {
       try {
@@ -1048,32 +1051,14 @@
         
         onSnapshot(boardDocRef, (snapshot) => {
           if (snapshot.exists()) {
+            // Normal load
             isRemoteUpdate = true;
             const data = snapshot.data();
-            
-            // CONTROLLO DI SICUREZZA: Il database nel cloud è vuoto?
-            let totalCards = 0;
-            if (data) {
-              for (const col in data) {
-                if (Array.isArray(data[col])) totalCards += data[col].length;
-              }
-            }
-
-            if (totalCards === 0) {
-              // Il database esiste ma è stato svuotato. 
-              // Ignoriamo il database vuoto e SALVIAMO l'HTML attuale (con le vecchie card) nel cloud!
-              isFirebaseInitialized = true; // Sblocca il salvataggio
-              isRemoteUpdate = false;
-              window.saveBoard();
-            } else {
-              // Il database ha dei dati, caricali normalmente
-              renderBoardState(data);
-              isFirebaseInitialized = true;
-              setTimeout(() => isRemoteUpdate = false, 100);
-            }
-            
+            renderBoardState(data);
+            isFirebaseInitialized = true;
+            setTimeout(() => isRemoteUpdate = false, 100);
           } else {
-            // Primo avvio in assoluto: salva l'HTML nel cloud
+            // Document missing! Save the HTML cards instantly.
             isFirebaseInitialized = true;
             window.saveBoard();
           }
