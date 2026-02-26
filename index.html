@@ -379,14 +379,14 @@
 </div>
 
 <div class="board-wrapper">
-  <!-- ORDINE DELLE COLONNE INVERTITO -->
+  <!-- NUOVO ORDINE DELLE COLONNE -->
   <div class="board">
     
-    <!-- 1. Info Importanti -->
-    <div class="column col-info">
-      <div class="column-header"><h2 class="column-title">📌 Info importanti</h2></div>
-      <div class="card-container" id="info" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
-      <button class="add-btn" onclick="window.openAddModal('info')">+ Aggiungi info</button>
+    <!-- 1. Next Events (Prossimi eventi) -->
+    <div class="column col-events">
+      <div class="column-header"><h2 class="column-title">🚀 Prossimi eventi</h2></div>
+      <div class="card-container" id="events" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
+      <button class="add-btn" onclick="window.openAddModal('events')">+ Aggiungi evento</button>
     </div>
 
     <!-- 2. Piano Editoriale -->
@@ -396,14 +396,7 @@
       <button class="add-btn" onclick="window.openAddModal('editoriale')">+ Aggiungi post</button>
     </div>
 
-    <!-- 3. Next Events -->
-    <div class="column col-events">
-      <div class="column-header"><h2 class="column-title">🚀 Next events</h2></div>
-      <div class="card-container" id="events" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
-      <button class="add-btn" onclick="window.openAddModal('events')">+ Aggiungi evento</button>
-    </div>
-
-    <!-- 4. To Do List (Split) -->
+    <!-- 3. To Do List (Split) -->
     <div class="column col-todo">
       <div class="column-header"><h2 class="column-title">📝 To do list</h2></div>
       <div class="split-board">
@@ -420,11 +413,18 @@
       </div>
     </div>
 
-    <!-- 5. Latest Updates -->
+    <!-- 4. Appunti (Latest Updates) -->
     <div class="column col-updates">
-      <div class="column-header"><h2 class="column-title">⚡ Latest updates</h2></div>
+      <div class="column-header"><h2 class="column-title">⚡ Appunti</h2></div>
       <div class="card-container" id="updates" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
-      <button class="add-btn" onclick="window.openAddModal('updates')">+ Aggiungi update</button>
+      <button class="add-btn" onclick="window.openAddModal('updates')">+ Aggiungi appunto</button>
+    </div>
+
+    <!-- 5. Info Importanti -->
+    <div class="column col-info">
+      <div class="column-header"><h2 class="column-title">📌 Info importanti</h2></div>
+      <div class="card-container" id="info" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
+      <button class="add-btn" onclick="window.openAddModal('info')">+ Aggiungi info</button>
     </div>
 
   </div>
