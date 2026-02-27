@@ -179,7 +179,7 @@
     width: 90%; max-width: 480px; transform: scale(0.95) translateY(10px); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-  .modal-content h3 { margin: 0 0 24px 0; font-size: 22px; font-weight: 700; }
+  .modal-content h3 { margin: 0; font-size: 22px; font-weight: 700; }
 
   /* Login Screen Specific */
   #login-screen { z-index: 9999; background: rgba(245, 245, 247, 0.85); backdrop-filter: blur(20px); }
@@ -225,19 +225,28 @@
   .modal-btn.danger:hover { background: #D70015; }
   
   /* Nuovi Pulsanti Success/Archive - Minimal */
-  .modal-btn.success { background: #E4F8EB; color: #248A3D; margin-right: auto; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #D1F0DF; }
+  .modal-btn.success { background: #E4F8EB; color: #248A3D; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #D1F0DF; }
   .modal-btn.success:hover { background: #D1F0DF; }
-  .modal-btn.archive { background: #F2F2F7; color: #86868B; margin-right: auto; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #E5E5EA; }
+  .modal-btn.archive { background: #F2F2F7; color: #86868B; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #E5E5EA; }
   .modal-btn.archive:hover { background: #E5E5EA; color: #1D1D1F; }
 
   /* Pulsante icona cestino - Piccolo e Rosso */
   .icon-btn-delete {
     background: rgba(255, 59, 48, 0.1); border: none; cursor: pointer;
-    border-radius: 50%; transition: all 0.2s;
+    border-radius: 10px; transition: all 0.2s;
     width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; padding: 0;
     color: #FF3B30;
   }
   .icon-btn-delete:hover { background: rgba(255, 59, 48, 0.2); transform: scale(1.05); }
+
+  /* Pulsante icona chiudi (X) */
+  .icon-btn-close {
+    background: transparent; border: none; cursor: pointer;
+    border-radius: 50%; transition: all 0.2s;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0;
+    color: var(--text-secondary);
+  }
+  .icon-btn-close:hover { background: rgba(0,0,0,0.06); color: var(--text-primary); }
 
   #confirmModal .modal-content { max-width: 340px; text-align: center; padding: 32px; }
   .card-container.drag-over { background: rgba(0,0,0,0.03); border-radius: var(--border-radius-sm); border: 2px dashed rgba(0,0,0,0.1); }
@@ -246,8 +255,10 @@
      RESPONSIVE: LAYOUT MOBILE "A SETTORI"
      ========================================= */
   @media (max-width: 900px) {
-    .app-header { padding: 16px 20px; }
-    .board-wrapper { padding: 20px; }
+    .app-header { padding: 16px 24px; }
+    
+    /* Aumentato lo spazio (padding) intorno a tutta la bacheca */
+    .board-wrapper { padding: 32px 24px; } 
     
     /* Disattiva lo scrolling orizzontale e impila in verticale */
     .board { flex-direction: column; min-width: 100%; gap: 32px; }
@@ -256,6 +267,7 @@
     .column {
       width: 100% !important; 
       min-width: 100% !important; 
+      box-sizing: border-box; /* RISOLVE IL PROBLEMA DELL'OVERFLOW A DESTRA */
       height: auto; 
       min-height: 0;
       border-top: 6px solid rgba(0,0,0,0.05); /* Separa chiaramente i settori */
@@ -266,7 +278,12 @@
     .split-board { flex-direction: column; gap: 32px; }
     
     /* Assicurarsi che l'archivio compresso su mobile prenda tutto lo spazio orizzontale */
-    .col-archivio.collapsed { width: 100% !important; min-width: 100% !important; filter: grayscale(10%); }
+    .col-archivio.collapsed { 
+      width: 100% !important; 
+      min-width: 100% !important; 
+      filter: grayscale(10%); 
+      box-sizing: border-box; 
+    }
   }
 </style>
 </head>
@@ -361,11 +378,11 @@
 <!-- Modale di Aggiunta/Modifica Task -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
       <h3 id="modalTitle" style="margin: 0;">Nuovo Task</h3>
-      <!-- Pulsante Elimina ridotto a icona (SVG rosso) -->
-      <button class="icon-btn-delete" id="deleteTaskBtn" style="display: none;" onclick="window.openConfirmModal()" title="Elimina Task">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+      <!-- Pulsante Chiudi in alto a destra (SVG X) -->
+      <button class="icon-btn-close" onclick="window.closeModal()" title="Chiudi scheda">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
     
@@ -414,10 +431,16 @@
       </div>
     </div>
     <div class="modal-actions">
-      <!-- Pulsante Dinamico di Archiviazione -->
-      <button class="modal-btn" id="archiveTaskBtn" style="display: none;" onclick="window.archiveTask()">Archivia</button>
+      <!-- Gruppo pulsanti secondari a sinistra -->
+      <div style="display: flex; gap: 8px; margin-right: auto; align-items: center;">
+        <button class="modal-btn" id="archiveTaskBtn" style="display: none;" onclick="window.archiveTask()">Archivia</button>
+        <!-- Pulsante Elimina ridotto a icona (SVG rosso) -->
+        <button class="icon-btn-delete" id="deleteTaskBtn" style="display: none;" onclick="window.openConfirmModal()" title="Elimina Task">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+        </button>
+      </div>
       
-      <button class="modal-btn cancel" onclick="window.closeModal()">Annulla</button>
+      <!-- L'opzione annulla è sostituita dalla X in alto, rimane solo il pulsante primario -->
       <button class="modal-btn primary" id="modalSubmitBtn" onclick="window.confirmTask()">Salva Task</button>
     </div>
   </div>
