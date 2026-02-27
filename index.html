@@ -149,6 +149,7 @@
   /* --- Badges --- */
   .card-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
   .badge-social { font-size: 11px; background: #F0F0F2; color: #86868B; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+  .badge-content { font-size: 11px; background: #F4E6FD; color: #AF52DE; padding: 4px 10px; border-radius: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
   .badge-media { font-size: 11px; background: #E8F2FF; color: #007AFF; padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;}
   .badge-media:hover { background: #D1E5FF; }
 
@@ -223,8 +224,6 @@
   .modal-btn.cancel:hover { background: #E5E5EA; }
   .modal-btn.primary { background: var(--accent-color); color: white; }
   .modal-btn.primary:hover { background: #0066D6; }
-  .modal-btn.danger { background: #FF3B30; color: white; }
-  .modal-btn.danger:hover { background: #D70015; }
   
   /* Nuovi Pulsanti Success/Archive - Minimal */
   .modal-btn.success { background: #E4F8EB; color: #248A3D; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #D1F0DF; }
@@ -397,7 +396,20 @@
       <input type="text" id="taskSubtitle" placeholder="es. 24 Ott o Riunione Team" onkeypress="window.handleKeyPress(event)">
     </div>
 
-    <!-- Nuovi campi per Social e Multimedia -->
+    <!-- Nuovo Menu a tendina "Tipo di Contenuto" visibile SOLO per Piano Editoriale -->
+    <div class="input-group" id="contentTypeGroup" style="display: none;">
+      <label>Tipo di Contenuto</label>
+      <select id="taskContentType">
+        <option value="">Nessuno (Generico)</option>
+        <option value="Editorial">Editorial</option>
+        <option value="Info/Evento">Info/Evento</option>
+        <option value="Foto/Recap">Foto/Recap</option>
+        <option value="Opportunità">Opportunità</option>
+        <option value="Altro">Altro</option>
+      </select>
+    </div>
+
+    <!-- Campi per Social e Multimedia -->
     <div class="input-group" style="display: flex; gap: 16px;">
       <div style="flex: 1;">
         <label>Social Network</label>
@@ -542,14 +554,33 @@
     return html;
   }
 
+  // Funzione per ottenere l'emoji giusta per il social
+  function getSocialIcon(socialName) {
+    const icons = {
+      "Instagram": "📸",
+      "Facebook": "👥",
+      "LinkedIn": "💼",
+      "TikTok": "🎵",
+      "X (Twitter)": "🐦"
+    };
+    return icons[socialName] || "📱";
+  }
+
   // --- Funzione condivisa per stampare l'HTML di una Card ---
   function buildCardHTML(cardData) {
     let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
     if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
 
-    if (cardData.social || cardData.media) {
+    if (cardData.social || cardData.media || cardData.contentType) {
       innerHTML += `<div class="card-badges">`;
-      if (cardData.social) innerHTML += `<span class="badge-social">📱 ${cardData.social}</span>`;
+      // Nuovo badge per il Tipo di Contenuto
+      if (cardData.contentType) {
+        innerHTML += `<span class="badge-content">🏷️ ${cardData.contentType}</span>`;
+      }
+      if (cardData.social) {
+        const socialIcon = getSocialIcon(cardData.social);
+        innerHTML += `<span class="badge-social">${socialIcon} ${cardData.social}</span>`;
+      }
       if (cardData.media) innerHTML += `<a href="${cardData.media}" target="_blank" onclick="event.stopPropagation()" class="badge-media">🔗 Apri Media</a>`;
       innerHTML += `</div>`;
     }
@@ -606,9 +637,17 @@
     document.getElementById('deleteTaskBtn').style.display = 'none';
     document.getElementById('archiveTaskBtn').style.display = 'none';
 
+    // Mostra/Nascondi il tipo di contenuto in base alla colonna
+    if (columnId === 'editoriale') {
+        document.getElementById('contentTypeGroup').style.display = 'block';
+    } else {
+        document.getElementById('contentTypeGroup').style.display = 'none';
+    }
+
     document.getElementById('taskInput').value = '';
     document.getElementById('taskSubtitle').value = '';
     document.getElementById('taskBody').value = '';
+    document.getElementById('taskContentType').value = '';
     document.getElementById('taskSocial').value = '';
     document.getElementById('taskMedia').value = '';
     
@@ -640,10 +679,19 @@
     const titleEl = card.querySelector('.card-title');
     const subtitleEl = card.querySelector('.card-subtitle');
     const bodyEl = card.querySelector('.card-body');
+    const currentContentType = card.getAttribute('data-content-type') || '';
+
+    // Mostra il selettore se siamo nel piano editoriale O se la card ha già un tipo di contenuto
+    if (colId === 'editoriale' || currentContentType !== '') {
+        document.getElementById('contentTypeGroup').style.display = 'block';
+    } else {
+        document.getElementById('contentTypeGroup').style.display = 'none';
+    }
 
     document.getElementById('taskInput').value = titleEl ? titleEl.textContent : '';
     document.getElementById('taskSubtitle').value = subtitleEl ? subtitleEl.textContent : '';
     document.getElementById('taskBody').value = bodyEl ? decodeURIComponent(bodyEl.getAttribute('data-raw') || '') : '';
+    document.getElementById('taskContentType').value = currentContentType;
     document.getElementById('taskSocial').value = card.getAttribute('data-social') || '';
     document.getElementById('taskMedia').value = card.getAttribute('data-media') || '';
 
@@ -706,11 +754,13 @@
         color: selectedTaskColor,
         subtitle: document.getElementById('taskSubtitle').value.trim(),
         body: document.getElementById('taskBody').value.trim(),
+        contentType: document.getElementById('taskContentType').value,
         social: document.getElementById('taskSocial').value,
         media: document.getElementById('taskMedia').value.trim(),
         assignee: currentAssignee
     };
 
+    card.setAttribute('data-content-type', cardData.contentType);
     card.setAttribute('data-social', cardData.social);
     card.setAttribute('data-media', cardData.media);
     card.innerHTML = buildCardHTML(cardData);
@@ -742,6 +792,7 @@
           color: card.querySelector('.card-title')?.getAttribute('data-color') || '#1D1D1F',
           subtitle: card.querySelector('.card-subtitle')?.textContent || '',
           body: rawBody,
+          contentType: card.getAttribute('data-content-type') || '',
           social: card.getAttribute('data-social') || '',
           media: card.getAttribute('data-media') || '',
           assignee: card.querySelector('.assignee-select')?.value || ''
@@ -761,6 +812,7 @@
         const card = document.createElement('div');
         card.className = 'card'; card.draggable = true; card.id = cardData.id; card.ondragstart = window.drag; 
         
+        card.setAttribute('data-content-type', cardData.contentType || '');
         card.setAttribute('data-social', cardData.social || '');
         card.setAttribute('data-media', cardData.media || '');
         card.innerHTML = buildCardHTML(cardData);
@@ -797,8 +849,8 @@
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'parma-dashboard';
     
-    // Connessione al database live (versione 4 pulita)
-    boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board_v4');
+    // Connessione al database live (versione 5)
+    boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board_v5');
 
     const initFirebase = async () => {
       try {
