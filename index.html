@@ -79,17 +79,24 @@
   .col-archivio:hover {
     min-width: 320px; width: 320px; opacity: 1; filter: grayscale(0%);
   }
-  /* Nasconde i dettagli interni dell'archivio quando non è in focus */
+  
+  /* Nasconde i dettagli interni dell'archivio e dei task LONG TERM quando non sono in focus */
   .col-archivio:not(:hover) .card-subtitle,
   .col-archivio:not(:hover) .card-body,
   .col-archivio:not(:hover) .card-badges,
-  .col-archivio:not(:hover) .assignee-select {
+  .col-archivio:not(:hover) .assignee-select,
+  #todo-long:not(:hover) .card-subtitle,
+  #todo-long:not(:hover) .card-body,
+  #todo-long:not(:hover) .card-badges,
+  #todo-long:not(:hover) .assignee-select {
     display: none;
   }
-  .col-archivio:not(:hover) .card-title {
+  .col-archivio:not(:hover) .card-title,
+  #todo-long:not(:hover) .card-title {
     font-size: 13px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .col-archivio:not(:hover) .card { padding: 12px; }
+  .col-archivio:not(:hover) .card,
+  #todo-long:not(:hover) .card { padding: 12px; }
 
   /* --- Headers & Colors --- */
   .column-header { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
