@@ -180,13 +180,15 @@
   .modal-content {
     background: #ffffff; padding: 32px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.2);
     width: 90%; max-width: 480px; transform: scale(0.95) translateY(10px); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* NUOVO: Rende la modale scrollabile internamente per evitare che venga tagliata su schermi piccoli */
+    max-height: 90vh; overflow-y: auto;
   }
   .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
   .modal-content h3 { margin: 0; font-size: 22px; font-weight: 700; }
 
   /* Login Screen Specific */
   #login-screen { z-index: 9999; background: rgba(245, 245, 247, 0.85); backdrop-filter: blur(20px); }
-  #login-screen .modal-content { text-align: center; max-width: 380px; padding: 40px 30px; }
+  #login-screen .modal-content { text-align: center; max-width: 380px; padding: 40px 30px; overflow-y: visible; }
   #login-screen h2 { margin: 0 0 12px 0; font-size: 24px; }
   #login-screen p { color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; line-height: 1.5; }
   #login-screen input { text-align: center; font-size: 18px; letter-spacing: 2px; padding: 16px; margin-bottom: 20px; border-radius: 14px;}
@@ -207,6 +209,10 @@
   .modal-content input:focus, .modal-content textarea:focus, .modal-content select:focus { 
     border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
   }
+
+  .flex-group { display: flex; gap: 16px; }
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
 
   .color-picker { display: flex; gap: 12px; margin-top: 8px; }
   .color-swatch {
@@ -257,8 +263,6 @@
      ========================================= */
   @media (max-width: 900px) {
     .app-header { padding: 16px 24px; }
-    
-    /* Aumentato lo spazio (padding) intorno a tutta la bacheca */
     .board-wrapper { padding: 32px 24px; } 
     
     /* Disattiva lo scrolling orizzontale e impila in verticale */
@@ -268,23 +272,27 @@
     .column {
       width: 100% !important; 
       min-width: 100% !important; 
-      box-sizing: border-box; /* RISOLVE IL PROBLEMA DELL'OVERFLOW A DESTRA */
+      box-sizing: border-box; 
       height: auto; 
       min-height: 0;
-      border-top: 6px solid rgba(0,0,0,0.05); /* Separa chiaramente i settori */
+      border-top: 6px solid rgba(0,0,0,0.05); 
       box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     }
     
-    /* La split-board (To Do List) si impila anch'essa verticalmente */
     .split-board { flex-direction: column; gap: 32px; }
-    
-    /* Assicurarsi che l'archivio compresso su mobile prenda tutto lo spazio orizzontale */
-    .col-archivio.collapsed { 
-      width: 100% !important; 
-      min-width: 100% !important; 
-      filter: grayscale(10%); 
-      box-sizing: border-box; 
+    .col-archivio.collapsed { width: 100% !important; min-width: 100% !important; filter: grayscale(10%); box-sizing: border-box; }
+
+    /* OTTIMIZZAZIONI MODALE PER MOBILE */
+    .modal-content { 
+      padding: 24px 20px; /* Margini interni ridotti per dare più spazio */
     }
+    /* Mette i campi Social e Link uno sopra l'altro invece che affiancati */
+    .flex-group { 
+      flex-direction: column; 
+      gap: 0; 
+    }
+    .flex-group > div { width: 100%; margin-bottom: 20px; }
+    .flex-group > div:last-child { margin-bottom: 0; }
   }
 </style>
 </head>
@@ -410,8 +418,8 @@
     </div>
 
     <!-- Campi per Social e Multimedia -->
-    <div class="input-group" style="display: flex; gap: 16px;">
-      <div style="flex: 1;">
+    <div class="input-group flex-group">
+      <div class="flex-1">
         <label>Social Network</label>
         <select id="taskSocial">
           <option value="">Nessuno</option>
@@ -422,7 +430,7 @@
           <option value="X (Twitter)">X (Twitter)</option>
         </select>
       </div>
-      <div style="flex: 2;">
+      <div class="flex-2">
         <label>Link Media (Canva, Drive...)</label>
         <input type="url" id="taskMedia" placeholder="https://...">
       </div>
