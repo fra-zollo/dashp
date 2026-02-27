@@ -39,266 +39,131 @@
     background-color: #F5F5F7;
   }
 
-  /* --- Sfondo Ambientale (Glassmorphism blobs) --- */
+  /* --- Sfondo Ambientale --- */
   .ambient-background {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: -1;
-    overflow: hidden;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1; overflow: hidden;
   }
-  .blob-1 {
-    position: absolute; top: -10%; left: -5%; width: 500px; height: 500px;
-    background: rgba(0, 122, 255, 0.12); border-radius: 50%; filter: blur(80px);
-  }
-  .blob-2 {
-    position: absolute; bottom: -20%; right: -5%; width: 600px; height: 600px;
-    background: rgba(255, 149, 0, 0.1); border-radius: 50%; filter: blur(100px);
-  }
-  .blob-3 {
-    position: absolute; top: 30%; left: 40%; width: 400px; height: 400px;
-    background: rgba(175, 82, 222, 0.08); border-radius: 50%; filter: blur(90px);
-  }
+  .blob-1 { position: absolute; top: -10%; left: -5%; width: 500px; height: 500px; background: rgba(0, 122, 255, 0.12); border-radius: 50%; filter: blur(80px); }
+  .blob-2 { position: absolute; bottom: -20%; right: -5%; width: 600px; height: 600px; background: rgba(255, 149, 0, 0.1); border-radius: 50%; filter: blur(100px); }
+  .blob-3 { position: absolute; top: 30%; left: 40%; width: 400px; height: 400px; background: rgba(175, 82, 222, 0.08); border-radius: 50%; filter: blur(90px); }
 
   /* --- Header --- */
   .app-header {
-    padding: 20px 40px;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 20px 40px; background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  
-  .app-title {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .app-title { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
 
   /* --- Board & Columns --- */
-  .board-wrapper {
-    flex: 1;
-    padding: 40px;
-    overflow-x: auto;
-    overflow-y: auto;
-  }
-
-  .board {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-    min-width: max-content; 
-    padding-bottom: 20px;
-  }
+  .board-wrapper { flex: 1; padding: 40px; overflow-x: auto; overflow-y: auto; }
+  .board { display: flex; gap: 24px; align-items: flex-start; min-width: max-content; padding-bottom: 20px; }
 
   .column {
-    background: var(--column-bg);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-radius: var(--border-radius-lg);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-    padding: 24px;
-    min-width: 320px;
-    width: 320px;
-    resize: horizontal; 
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 450px;
-    transition: box-shadow 0.3s ease;
+    background: var(--column-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+    border-radius: var(--border-radius-lg); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    padding: 24px; min-width: 320px; width: 320px; resize: horizontal; overflow: hidden;
+    display: flex; flex-direction: column; gap: 16px; min-height: 450px; transition: box-shadow 0.3s ease;
   }
-  
-  .column:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-  }
+  .column:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.6); }
 
-  .col-todo {
-    min-width: 620px;
-    width: 620px;
+  .col-todo { min-width: 620px; width: 620px; }
+
+  /* COMPORTAMENTO SPECIALE COLONNA ARCHIVIO */
+  .col-archivio {
+    min-width: 140px; width: 140px; opacity: 0.8; filter: grayscale(50%);
+    background: rgba(240, 240, 245, 0.5); transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  .col-archivio:hover {
+    min-width: 320px; width: 320px; opacity: 1; filter: grayscale(0%);
+  }
+  /* Nasconde i dettagli interni dell'archivio quando non è in focus */
+  .col-archivio:not(:hover) .card-subtitle,
+  .col-archivio:not(:hover) .card-body,
+  .col-archivio:not(:hover) .card-badges,
+  .col-archivio:not(:hover) .assignee-select {
+    display: none;
+  }
+  .col-archivio:not(:hover) .card-title {
+    font-size: 13px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .col-archivio:not(:hover) .card { padding: 12px; }
 
   /* --- Headers & Colors --- */
   .column-header { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  
-  .column-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
+  .column-title { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
 
   .col-updates .column-title { color: #007AFF; }
   .col-todo .column-title { color: #FF9500; }   
   .col-events .column-title { color: #AF52DE; } 
   .col-editoriale .column-title { color: #FF2D55; }
   .col-info .column-title { color: #34C759; }   
+  .col-archivio .column-title { color: #86868B; }
 
   /* --- Split Board Logic --- */
-  .split-board {
-    display: flex;
-    gap: 24px;
-    flex: 1;
-    height: 100%;
-  }
-
-  .sub-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 260px;
-  }
-
-  .sub-column-title {
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 600;
-    margin: 0 0 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  .split-board { display: flex; gap: 24px; flex: 1; height: 100%; }
+  .sub-column { flex: 1; display: flex; flex-direction: column; min-width: 260px; }
+  .sub-column-title { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
   /* --- Cards & Tasks --- */
-  .card-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px; 
-    flex: 1;
-    min-height: 50px; 
-    padding-bottom: 12px;
-  }
+  .card-container { display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 50px; padding-bottom: 12px; }
 
   .card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius-sm);
-    padding: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08); 
-    cursor: grab;
-    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
-    border: 1px solid rgba(0,0,0,0.02);
-    position: relative;
+    background: var(--card-bg); border-radius: var(--border-radius-sm); padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.08); cursor: grab;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, padding 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.02); position: relative;
   }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04); }
+  .card:active { cursor: grabbing; transform: scale(1.02); box-shadow: 0 16px 32px rgba(0,0,0,0.12); z-index: 100; }
 
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
-  }
-
-  .card:active {
-    cursor: grabbing;
-    transform: scale(1.02);
-    box-shadow: 0 16px 32px rgba(0,0,0,0.12);
-    z-index: 100;
-  }
-
-  .card-title {
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-  }
-
+  .card-title { margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; transition: all 0.3s ease; }
+  
   .card-subtitle {
-    margin: 0 0 14px 0;
-    font-size: 11px;
-    color: var(--text-secondary);
-    font-weight: 600;
-    display: inline-block;
-    padding: 4px 10px;
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 12px;
-    background: #F9F9FB;
+    margin: 0 0 12px 0; font-size: 11px; color: var(--text-secondary); font-weight: 600;
+    display: inline-block; padding: 4px 10px; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; background: #F9F9FB;
   }
 
-  .card-body {
-    margin: 0 0 18px 0;
-    font-size: 14.5px; 
-    color: var(--text-body);
-    line-height: 1.6; 
-    white-space: pre-wrap; 
-  }
-
+  .card-body { margin: 0 0 18px 0; font-size: 14.5px; color: var(--text-body); line-height: 1.6; white-space: pre-wrap; }
   .card-body ul.task-list { margin: 8px 0; padding-left: 20px; }
   .card-body ul.task-list li { margin-bottom: 8px; line-height: 1.5; }
 
+  /* --- Badges --- */
+  .card-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .badge-social { font-size: 11px; background: #F0F0F2; color: #86868B; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+  .badge-media { font-size: 11px; background: #E8F2FF; color: #007AFF; padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;}
+  .badge-media:hover { background: #D1E5FF; }
+
   /* --- Assignee Dropdown --- */
   .assignee-select {
-    appearance: none;
-    background-color: #F0F0F2; 
-    border: 1px solid rgba(0,0,0,0.03);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-family: inherit;
-    outline: none;
-    transition: all 0.2s;
-    width: max-content;
+    appearance: none; background-color: #F0F0F2; border: 1px solid rgba(0,0,0,0.03);
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    color: var(--text-secondary); cursor: pointer; font-family: inherit; outline: none; transition: all 0.2s; width: max-content;
   }
-
-  .assignee-select:hover {
-    background-color: #E8E8ED;
-    color: var(--text-primary);
-  }
-
+  .assignee-select:hover { background-color: #E8E8ED; color: var(--text-primary); }
   .assignee-select:focus { box-shadow: 0 0 0 2px var(--accent-color); color: var(--text-primary); }
 
   /* --- Add Button --- */
   .add-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 14px;
-    font-weight: 600;
-    text-align: left;
-    padding: 12px 8px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-    border-radius: 8px;
-    margin-top: auto;
+    background: transparent; border: none; color: var(--text-secondary); font-size: 14px; font-weight: 600;
+    text-align: left; padding: 12px 8px; cursor: pointer; font-family: inherit; transition: all 0.2s; border-radius: 8px; margin-top: auto;
   }
-
   .add-btn:hover { color: var(--text-primary); background: rgba(0,0,0,0.04); }
 
   /* --- Modals & Overlays --- */
   .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 1000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
   }
-
   .modal-overlay.active { display: flex; opacity: 1; }
 
   .modal-content {
-    background: #ffffff;
-    padding: 32px;
-    border-radius: 24px;
-    box-shadow: 0 24px 48px rgba(0,0,0,0.2);
-    width: 90%;
-    max-width: 480px;
-    transform: scale(0.95) translateY(10px);
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    background: #ffffff; padding: 32px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+    width: 90%; max-width: 480px; transform: scale(0.95) translateY(10px); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-
   .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
   .modal-content h3 { margin: 0 0 24px 0; font-size: 22px; font-weight: 700; }
 
@@ -313,33 +178,29 @@
   /* Generic Form Inputs */
   .input-group { margin-bottom: 20px; text-align: left; }
   .input-group label {
-    display: block; font-size: 12px; font-weight: 600;
-    color: var(--text-secondary); margin-bottom: 8px;
-    text-transform: uppercase; letter-spacing: 0.5px;
+    display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .modal-content input, .modal-content textarea {
-    width: 100%; padding: 14px 16px; border: 1px solid #E5E5EA;
-    border-radius: var(--border-radius-sm); font-size: 15px;
-    font-family: inherit; box-sizing: border-box; outline: none;
+  .modal-content input, .modal-content textarea, .modal-content select {
+    width: 100%; padding: 14px 16px; border: 1px solid #E5E5EA; border-radius: var(--border-radius-sm);
+    font-size: 15px; font-family: inherit; box-sizing: border-box; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s; resize: vertical; line-height: 1.5;
   }
-  .modal-content input:focus, .modal-content textarea:focus { 
-    border-color: var(--accent-color); 
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+  .modal-content select { background: #fff; cursor: pointer; }
+  .modal-content input:focus, .modal-content textarea:focus, .modal-content select:focus { 
+    border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
   }
 
   .color-picker { display: flex; gap: 12px; margin-top: 8px; }
   .color-swatch {
-    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-    border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s;
   }
   .color-swatch.selected { transform: scale(1.15); box-shadow: 0 0 0 3px white inset, 0 2px 8px rgba(0,0,0,0.1); }
 
   .modal-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 28px; }
   .modal-btn {
-    padding: 12px 24px; border-radius: 20px; font-size: 14px;
-    font-weight: 600; cursor: pointer; border: none;
-    font-family: inherit; transition: background-color 0.2s, transform 0.1s;
+    padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    border: none; font-family: inherit; transition: background-color 0.2s, transform 0.1s;
   }
   .modal-btn:active { transform: scale(0.97); }
   .modal-btn.cancel { background: #F0F0F2; color: var(--text-primary); }
@@ -348,15 +209,19 @@
   .modal-btn.primary:hover { background: #0066D6; }
   .modal-btn.danger { background: #FF3B30; color: white; }
   .modal-btn.danger:hover { background: #D70015; }
+  
+  /* Nuovi Pulsanti Success/Archive */
+  .modal-btn.success { background: #34C759; color: white; margin-right: auto; }
+  .modal-btn.success:hover { background: #28A745; }
+  .modal-btn.archive { background: #8E8E93; color: white; margin-right: auto; }
+  .modal-btn.archive:hover { background: #636366; }
 
   #confirmModal .modal-content { max-width: 340px; text-align: center; padding: 32px; }
-
   .card-container.drag-over { background: rgba(0,0,0,0.03); border-radius: var(--border-radius-sm); border: 2px dashed rgba(0,0,0,0.1); }
 </style>
 </head>
 <body>
 
-<!-- Ambient Background -->
 <div class="ambient-background">
   <div class="blob-1"></div>
   <div class="blob-2"></div>
@@ -379,10 +244,9 @@
 </div>
 
 <div class="board-wrapper">
-  <!-- NUOVO ORDINE DELLE COLONNE -->
   <div class="board">
     
-    <!-- 1. Next Events (Prossimi eventi) -->
+    <!-- 1. Next Events -->
     <div class="column col-events">
       <div class="column-header"><h2 class="column-title">🚀 Prossimi eventi</h2></div>
       <div class="card-container" id="events" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
@@ -413,7 +277,7 @@
       </div>
     </div>
 
-    <!-- 4. Appunti (Latest Updates) -->
+    <!-- 4. Appunti -->
     <div class="column col-updates">
       <div class="column-header"><h2 class="column-title">⚡ Appunti</h2></div>
       <div class="card-container" id="updates" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
@@ -427,13 +291,24 @@
       <button class="add-btn" onclick="window.openAddModal('info')">+ Aggiungi info</button>
     </div>
 
+    <!-- 6. ARCHIVIO (Nuova Colonna "Esplodibile") -->
+    <div class="column col-archivio">
+      <div class="column-header"><h2 class="column-title">🗄️ Archivio</h2></div>
+      <div class="card-container" id="archivio" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
+    </div>
+
   </div>
 </div>
 
 <!-- Modale di Aggiunta/Modifica Task -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
-    <h3 id="modalTitle">Nuovo Task</h3>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <h3 id="modalTitle">Nuovo Task</h3>
+      <!-- Pulsante Elimina rimpicciolito in alto a destra -->
+      <button class="modal-btn cancel" id="deleteTaskBtn" style="display: none; color: #FF3B30; padding: 8px 12px; font-size: 12px;" onclick="window.openConfirmModal()">🗑️ Elimina</button>
+    </div>
+    
     <div class="input-group">
       <label>Titolo</label>
       <input type="text" id="taskInput" placeholder="Inserisci il titolo..." onkeypress="window.handleKeyPress(event)">
@@ -442,9 +317,29 @@
       <label>Data o Sottotitolo (Opzionale)</label>
       <input type="text" id="taskSubtitle" placeholder="es. 24 Ott o Riunione Team" onkeypress="window.handleKeyPress(event)">
     </div>
+
+    <!-- Nuovi campi per Social e Multimedia -->
+    <div class="input-group" style="display: flex; gap: 16px;">
+      <div style="flex: 1;">
+        <label>Social Network</label>
+        <select id="taskSocial">
+          <option value="">Nessuno</option>
+          <option value="Instagram">Instagram</option>
+          <option value="Facebook">Facebook</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="TikTok">TikTok</option>
+          <option value="X (Twitter)">X (Twitter)</option>
+        </select>
+      </div>
+      <div style="flex: 2;">
+        <label>Link Media (Canva, Drive...)</label>
+        <input type="url" id="taskMedia" placeholder="https://...">
+      </div>
+    </div>
+
     <div class="input-group">
       <label>Descrizione (Opzionale)</label>
-      <textarea id="taskBody" placeholder="Tip: Inizia una riga con '- ' per creare un elenco puntato!" rows="4"></textarea>
+      <textarea id="taskBody" placeholder="Tip: Inizia una riga con '- ' per creare un elenco puntato!" rows="3"></textarea>
     </div>
     <div class="input-group">
       <label>Colore del Titolo</label>
@@ -459,14 +354,15 @@
       </div>
     </div>
     <div class="modal-actions">
-      <button class="modal-btn cancel" id="deleteTaskBtn" style="display: none; color: #FF3B30; margin-right: auto;" onclick="window.openConfirmModal()">Elimina</button>
+      <!-- Pulsante Dinamico di Archiviazione -->
+      <button class="modal-btn" id="archiveTaskBtn" style="display: none;" onclick="window.archiveTask()">Archivia</button>
+      
       <button class="modal-btn cancel" onclick="window.closeModal()">Annulla</button>
       <button class="modal-btn primary" id="modalSubmitBtn" onclick="window.confirmTask()">Salva Task</button>
     </div>
   </div>
 </div>
 
-<!-- Modale di Conferma Eliminazione -->
 <div class="modal-overlay" id="confirmModal" style="z-index: 2000;">
   <div class="modal-content">
     <h3 style="margin-bottom: 8px;">Eliminare task?</h3>
@@ -478,13 +374,11 @@
   </div>
 </div>
 
-<!-- Application Logic -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
   import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  // --- 0. Gestione Password ---
   window.checkPassword = function() {
     const pwd = document.getElementById('password-input').value;
     if (pwd === '2027') {
@@ -495,19 +389,16 @@
     }
   }
 
-  // Se è già autenticato in questa sessione, nascondi la schermata
   if (sessionStorage.getItem('parma_auth') === 'true') {
     document.getElementById('login-screen').classList.remove('active');
   }
 
-  // --- 1. DEFAULT DATA FALLBACK ---
   const DEFAULT_BOARD_STATE = {
-    "info": [],
-    "editoriale": [],
     "events": [
       { id: "card12", title: "Evento con Ministro Zangrillo", color: "#AF52DE", subtitle: "3 Marzo 2026", body: "INC raccoglie e prepara i testi per la stampa.", assignee: "inc" },
       { id: "card13", title: "Workshop Universitario", color: "#AF52DE", subtitle: "6 Marzo 2026", body: "140 giovani europei. Zollo attiva subito i volontari CLG per formare un gruppo di comunicazione operativo temporaneo.", assignee: "zollo" }
     ],
+    "editoriale": [],
     "todo-short": [
       { id: "card4", title: "Grafica e Identità", color: "#FF9500", subtitle: "Entro questa settimana", body: "MATE definisce la timeline di sviluppo con i grafici vincitori, apporta gli aggiustamenti al logo e inizia a \"esplodere\" brand identity. Creare nuova carta intestata.", assignee: "mate" },
       { id: "card5", title: "Sito Web e Concept", color: "#FF9500", subtitle: "", body: "MATE e Zollo mettono online un sito web temporaneo. Feedback con il CLG sulla brand identity e sui claim.", assignee: "zollo" },
@@ -524,7 +415,9 @@
       { id: "card1", title: "Strategia Brand Identity", color: "#007AFF", subtitle: "Riassunto riunione 22/02/2026", body: "MATE ha evidenziato la necessità di un'identità forte che vada oltre la sigla \"EYC\". Volontà di risolvere alcune criticità del logo. Apprezzata l'idea di usare la simbologia, anche quella delle \"4 vie\".", assignee: "mate" },
       { id: "card2", title: "Gestione Media e Portavoci", color: "#007AFF", subtitle: "", body: "- Media tradizionali: Assessora Aimi e rappresentante giovani (formazione INC).\n- Social Media: approccio corale, assegnare giovani a ogni \"piazza\".", assignee: "inc" },
       { id: "card3", title: "Ruoli e Supervisione", color: "#007AFF", subtitle: "", body: "INC manterrà stabilmente il ruolo di riferimento principale per la supervisione strategica e dei contenuti.", assignee: "inc" }
-    ]
+    ],
+    "info": [],
+    "archivio": []
   };
 
   let cardCounter = 100; 
@@ -535,13 +428,9 @@
   let isRemoteUpdate = false;
   let boardDocRef = null;
 
-  // Formattatore Testo intelligente per gli elenchi puntati
   function formatTextToHTML(text) {
     if (!text) return '';
-    let lines = text.split('\n');
-    let html = '';
-    let inList = false;
-    
+    let lines = text.split('\n'); let html = ''; let inList = false;
     for (let line of lines) {
         let tLine = line.trim();
         if (tLine.startsWith('- ') || tLine.startsWith('• ')) {
@@ -556,7 +445,36 @@
     return html;
   }
 
-  // --- 3. Funzioni UI ---
+  // --- Funzione condivisa per stampare l'HTML di una Card ---
+  function buildCardHTML(cardData) {
+    let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
+    if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
+
+    if (cardData.social || cardData.media) {
+      innerHTML += `<div class="card-badges">`;
+      if (cardData.social) innerHTML += `<span class="badge-social">📱 ${cardData.social}</span>`;
+      if (cardData.media) innerHTML += `<a href="${cardData.media}" target="_blank" onclick="event.stopPropagation()" class="badge-media">🔗 Apri Media</a>`;
+      innerHTML += `</div>`;
+    }
+
+    if (cardData.body) {
+      innerHTML += `<p class="card-body" data-raw="${encodeURIComponent(cardData.body)}">${formatTextToHTML(cardData.body)}</p>`;
+    }
+
+    innerHTML += `
+      <select class="assignee-select">
+        <option value="" disabled ${!cardData.assignee ? 'selected' : ''}>Assegna a...</option>
+        <option value="inc" ${cardData.assignee === 'inc' ? 'selected' : ''}>INC</option>
+        <option value="mate" ${cardData.assignee === 'mate' ? 'selected' : ''}>MATE</option>
+        <option value="zollo" ${cardData.assignee === 'zollo' ? 'selected' : ''}>Zollo</option>
+        <option value="clg" ${cardData.assignee === 'clg' ? 'selected' : ''}>CLG</option>
+        <option value="comitato" ${cardData.assignee === 'comitato' ? 'selected' : ''}>Comitato</option>
+        <option value="tutti" ${cardData.assignee === 'tutti' ? 'selected' : ''}>Tutti</option>
+      </select>
+    `;
+    return innerHTML;
+  }
+
   window.allowDrop = function(ev) { ev.preventDefault(); }
   window.drag = function(ev) { ev.dataTransfer.setData("text", ev.target.id); setTimeout(() => { ev.target.style.opacity = '0.5'; }, 0); }
   window.dragEnter = function(ev) { ev.preventDefault(); const dropZone = ev.target.closest('.card-container'); if (dropZone) dropZone.classList.add('drag-over'); }
@@ -571,7 +489,8 @@
     const dropZone = ev.target.closest('.card-container');
     if (dropZone) {
         dropZone.classList.remove('drag-over');
-        dropZone.appendChild(draggedElement);
+        // ORDINE LIFO: Inserisce in alto!
+        dropZone.insertBefore(draggedElement, dropZone.firstChild);
         window.saveBoard(); 
     }
   }
@@ -583,33 +502,43 @@
   }
 
   window.openAddModal = function(columnId) {
-    currentTargetColumnId = columnId;
-    currentEditingCardId = null; 
+    currentTargetColumnId = columnId; currentEditingCardId = null; 
     const modal = document.getElementById('taskModal');
     document.getElementById('modalTitle').textContent = 'Nuovo Task';
     document.getElementById('modalSubmitBtn').textContent = 'Aggiungi';
     document.getElementById('deleteTaskBtn').style.display = 'none';
+    document.getElementById('archiveTaskBtn').style.display = 'none';
 
     document.getElementById('taskInput').value = '';
     document.getElementById('taskSubtitle').value = '';
     document.getElementById('taskBody').value = '';
+    document.getElementById('taskSocial').value = '';
+    document.getElementById('taskMedia').value = '';
     
     selectedTaskColor = '#1D1D1F';
     document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
     document.querySelector('.color-swatch[data-color="#1D1D1F"]').classList.add('selected');
 
-    modal.classList.add('active');
-    setTimeout(() => document.getElementById('taskInput').focus(), 50); 
+    modal.classList.add('active'); setTimeout(() => document.getElementById('taskInput').focus(), 50); 
   }
 
   window.openEditModal = function(card) {
-    currentTargetColumnId = null;
-    currentEditingCardId = card.id;
-    
+    currentTargetColumnId = null; currentEditingCardId = card.id;
     const modal = document.getElementById('taskModal');
     document.getElementById('modalTitle').textContent = 'Modifica Task';
-    document.getElementById('modalSubmitBtn').textContent = 'Salva Modifiche';
+    document.getElementById('modalSubmitBtn').textContent = 'Salva';
     document.getElementById('deleteTaskBtn').style.display = 'block';
+
+    // Gestione dinamica Pulsante Pubblica/Archivia
+    const colId = card.closest('.card-container').id;
+    const archiveBtn = document.getElementById('archiveTaskBtn');
+    if (colId === 'editoriale') {
+        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn success'; archiveBtn.textContent = '✅ Pubblica';
+    } else if (colId !== 'archivio') {
+        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn archive'; archiveBtn.textContent = '🗄️ Archivia';
+    } else {
+        archiveBtn.style.display = 'none';
+    }
 
     const titleEl = card.querySelector('.card-title');
     const subtitleEl = card.querySelector('.card-subtitle');
@@ -617,12 +546,9 @@
 
     document.getElementById('taskInput').value = titleEl ? titleEl.textContent : '';
     document.getElementById('taskSubtitle').value = subtitleEl ? subtitleEl.textContent : '';
-    
-    if (bodyEl) {
-      document.getElementById('taskBody').value = decodeURIComponent(bodyEl.getAttribute('data-raw') || '');
-    } else {
-      document.getElementById('taskBody').value = '';
-    }
+    document.getElementById('taskBody').value = bodyEl ? decodeURIComponent(bodyEl.getAttribute('data-raw') || '') : '';
+    document.getElementById('taskSocial').value = card.getAttribute('data-social') || '';
+    document.getElementById('taskMedia').value = card.getAttribute('data-media') || '';
 
     selectedTaskColor = titleEl ? (titleEl.getAttribute('data-color') || '#1D1D1F') : '#1D1D1F';
     document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
@@ -630,124 +556,88 @@
     if (swatch) swatch.classList.add('selected');
     else document.querySelector('.color-swatch[data-color="#1D1D1F"]').classList.add('selected');
 
-    modal.classList.add('active');
-    setTimeout(() => document.getElementById('taskInput').focus(), 50);
+    modal.classList.add('active'); setTimeout(() => document.getElementById('taskInput').focus(), 50);
   }
 
-  window.closeModal = function() {
-    document.getElementById('taskModal').classList.remove('active');
-    currentTargetColumnId = null;
-    currentEditingCardId = null;
+  window.closeModal = function() { document.getElementById('taskModal').classList.remove('active'); currentTargetColumnId = null; currentEditingCardId = null; }
+
+  // Sposta la card nell'archivio
+  window.archiveTask = function() {
+      if (currentEditingCardId) {
+          const card = document.getElementById(currentEditingCardId);
+          const archivioContainer = document.getElementById('archivio');
+          if (card && archivioContainer) {
+              archivioContainer.insertBefore(card, archivioContainer.firstChild); // Metti in cima
+              window.saveBoard();
+          }
+      }
+      window.closeModal();
   }
 
   window.openConfirmModal = function() { document.getElementById('confirmModal').classList.add('active'); }
   window.closeConfirmModal = function() { document.getElementById('confirmModal').classList.remove('active'); }
   window.executeDelete = function() {
-    if (currentEditingCardId) {
-      const card = document.getElementById(currentEditingCardId);
-      if (card) { card.remove(); window.saveBoard(); }
-    }
-    window.closeConfirmModal();
-    window.closeModal();
+    if (currentEditingCardId) { const card = document.getElementById(currentEditingCardId); if (card) { card.remove(); window.saveBoard(); } }
+    window.closeConfirmModal(); window.closeModal();
   }
 
   window.handleKeyPress = function(event) { if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') window.confirmTask(); }
 
   window.confirmTask = function() {
     const title = document.getElementById('taskInput').value.trim();
-    const subtitle = document.getElementById('taskSubtitle').value.trim();
-    const bodyRaw = document.getElementById('taskBody').value.trim();
-    
     if (!title) return;
 
+    let card;
+    let currentAssignee = '';
+
     if (currentEditingCardId) {
-      const card = document.getElementById(currentEditingCardId);
-      
-      let titleEl = card.querySelector('.card-title');
-      if (!titleEl) { titleEl = document.createElement('p'); titleEl.className = 'card-title'; card.insertBefore(titleEl, card.firstChild); }
-      titleEl.textContent = title; titleEl.style.color = selectedTaskColor; titleEl.setAttribute('data-color', selectedTaskColor);
-
-      let subtitleEl = card.querySelector('.card-subtitle');
-      if (subtitle) {
-          if (!subtitleEl) { subtitleEl = document.createElement('p'); subtitleEl.className = 'card-subtitle'; titleEl.insertAdjacentElement('afterend', subtitleEl); }
-          subtitleEl.textContent = subtitle;
-      } else if (subtitleEl) subtitleEl.remove();
-
-      let bodyEl = card.querySelector('.card-body');
-      if (bodyRaw) {
-          if (!bodyEl) { bodyEl = document.createElement('p'); bodyEl.className = 'card-body'; const selectEl = card.querySelector('.assignee-select'); card.insertBefore(bodyEl, selectEl); }
-          bodyEl.innerHTML = formatTextToHTML(bodyRaw);
-          bodyEl.setAttribute('data-raw', encodeURIComponent(bodyRaw));
-      } else if (bodyEl) bodyEl.remove();
-
-      window.closeModal();
-      window.saveBoard();
-
+        card = document.getElementById(currentEditingCardId);
+        currentAssignee = card.querySelector('.assignee-select')?.value || '';
+        card.innerHTML = ''; // Resetta HTML
     } else {
-      if (!currentTargetColumnId) return;
-      const container = document.getElementById(currentTargetColumnId);
-      
-      const newCard = document.createElement('div');
-      newCard.className = 'card';
-      newCard.draggable = true;
-      newCard.id = 'card' + cardCounter;
-      newCard.ondragstart = window.drag;
-
-      let innerHTML = `<p class="card-title" style="color: ${selectedTaskColor};" data-color="${selectedTaskColor}">${title}</p>`;
-      if (subtitle) innerHTML += `<p class="card-subtitle">${subtitle}</p>`;
-      if (bodyRaw) {
-        innerHTML += `<p class="card-body" data-raw="${encodeURIComponent(bodyRaw)}">${formatTextToHTML(bodyRaw)}</p>`;
-      }
-
-      innerHTML += `
-        <select class="assignee-select">
-          <option value="" disabled selected>Assegna a...</option>
-          <option value="inc">INC</option>
-          <option value="mate">MATE</option>
-          <option value="zollo">Zollo</option>
-          <option value="clg">CLG</option>
-          <option value="comitato">Comitato</option>
-          <option value="tutti">Tutti</option>
-        </select>
-      `;
-
-      newCard.innerHTML = innerHTML;
-      container.appendChild(newCard);
-      
-      cardCounter++;
-      window.closeModal();
-      window.saveBoard(); 
+        if (!currentTargetColumnId) return;
+        const container = document.getElementById(currentTargetColumnId);
+        card = document.createElement('div');
+        card.className = 'card'; card.draggable = true; card.id = 'card' + cardCounter; card.ondragstart = window.drag;
+        cardCounter++;
+        // ORDINE LIFO: Nuovi in cima!
+        container.insertBefore(card, container.firstChild);
     }
+
+    const cardData = {
+        title: title,
+        color: selectedTaskColor,
+        subtitle: document.getElementById('taskSubtitle').value.trim(),
+        body: document.getElementById('taskBody').value.trim(),
+        social: document.getElementById('taskSocial').value,
+        media: document.getElementById('taskMedia').value.trim(),
+        assignee: currentAssignee
+    };
+
+    card.setAttribute('data-social', cardData.social);
+    card.setAttribute('data-media', cardData.media);
+    card.innerHTML = buildCardHTML(cardData);
+
+    window.closeModal();
+    window.saveBoard();
   }
 
-  // --- 4. Event Listeners per il Drag & Drop e Click ---
   document.addEventListener('dragend', function(ev) {
     if (ev.target.classList.contains('card')) ev.target.style.opacity = '1';
     document.querySelectorAll('.card-container').forEach(c => c.classList.remove('drag-over'));
   });
 
-  document.addEventListener('change', function(e) {
-    if (e.target.classList.contains('assignee-select')) window.saveBoard();
-  });
+  document.addEventListener('change', function(e) { if (e.target.classList.contains('assignee-select')) window.saveBoard(); });
+  document.addEventListener('click', function(e) { const card = e.target.closest('.card'); const isSelect = e.target.closest('.assignee-select'); if (card && !isSelect && e.target.tagName !== 'A') window.openEditModal(card); });
 
-  document.addEventListener('click', function(e) {
-    const card = e.target.closest('.card');
-    const isSelect = e.target.closest('.assignee-select'); 
-    if (card && !isSelect) window.openEditModal(card);
-  });
-
-  // --- 5. Database Gestione Salvataggi ---
   function getBoardState() {
     const state = {};
     document.querySelectorAll('.card-container').forEach(container => {
-      const colId = container.id;
-      state[colId] = [];
+      const colId = container.id; state[colId] = [];
       container.querySelectorAll('.card').forEach(card => {
         let rawBody = "";
         const bodyEl = card.querySelector('.card-body');
-        if (bodyEl) {
-           rawBody = decodeURIComponent(bodyEl.getAttribute('data-raw') || '');
-        }
+        if (bodyEl) rawBody = decodeURIComponent(bodyEl.getAttribute('data-raw') || '');
 
         state[colId].push({
           id: card.id,
@@ -755,6 +645,8 @@
           color: card.querySelector('.card-title')?.getAttribute('data-color') || '#1D1D1F',
           subtitle: card.querySelector('.card-subtitle')?.textContent || '',
           body: rawBody,
+          social: card.getAttribute('data-social') || '',
+          media: card.getAttribute('data-media') || '',
           assignee: card.querySelector('.assignee-select')?.value || ''
         });
       });
@@ -770,30 +662,12 @@
       
       cards.forEach(cardData => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.draggable = true;
-        card.id = cardData.id;
-        card.ondragstart = window.drag; 
-
-        let innerHTML = `<p class="card-title" style="color: ${cardData.color};" data-color="${cardData.color}">${cardData.title}</p>`;
-        if (cardData.subtitle) innerHTML += `<p class="card-subtitle">${cardData.subtitle}</p>`;
-        if (cardData.body) {
-          innerHTML += `<p class="card-body" data-raw="${encodeURIComponent(cardData.body)}">${formatTextToHTML(cardData.body)}</p>`;
-        }
-
-        innerHTML += `
-          <select class="assignee-select">
-            <option value="" disabled ${!cardData.assignee ? 'selected' : ''}>Assegna a...</option>
-            <option value="inc" ${cardData.assignee === 'inc' ? 'selected' : ''}>INC</option>
-            <option value="mate" ${cardData.assignee === 'mate' ? 'selected' : ''}>MATE</option>
-            <option value="zollo" ${cardData.assignee === 'zollo' ? 'selected' : ''}>Zollo</option>
-            <option value="clg" ${cardData.assignee === 'clg' ? 'selected' : ''}>CLG</option>
-            <option value="comitato" ${cardData.assignee === 'comitato' ? 'selected' : ''}>Comitato</option>
-            <option value="tutti" ${cardData.assignee === 'tutti' ? 'selected' : ''}>Tutti</option>
-          </select>
-        `;
-
-        card.innerHTML = innerHTML;
+        card.className = 'card'; card.draggable = true; card.id = cardData.id; card.ondragstart = window.drag; 
+        
+        card.setAttribute('data-social', cardData.social || '');
+        card.setAttribute('data-media', cardData.media || '');
+        card.innerHTML = buildCardHTML(cardData);
+        
         container.appendChild(card);
       });
     }
@@ -807,8 +681,7 @@
 
   window.saveBoard = async function() {
     if (isRemoteUpdate || !isFirebaseInitialized || !boardDocRef) return;
-    const state = getBoardState();
-    try { await setDoc(boardDocRef, state); } catch(e) { console.error("Firebase save error", e); }
+    try { await setDoc(boardDocRef, getBoardState()); } catch(e) { console.error("Firebase save error", e); }
   }
 
   // --- 6. Connessione a Firebase Cloud ---
@@ -827,8 +700,8 @@
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'parma-dashboard';
     
-    // Connessione al database live
-    boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board_v3');
+    // Connessione al database live (versione 4 pulita)
+    boardDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'boards', 'main_board_v4');
 
     const initFirebase = async () => {
       try {
@@ -842,25 +715,17 @@
           if (snapshot.exists()) {
             const data = snapshot.data();
             let totalCards = 0;
-            if (data) {
-              for (const col in data) if (Array.isArray(data[col])) totalCards += data[col].length;
-            }
+            if (data) { for (const col in data) if (Array.isArray(data[col])) totalCards += data[col].length; }
 
             if (totalCards === 0) {
-              isFirebaseInitialized = true; 
-              isRemoteUpdate = false;
-              renderBoardState(DEFAULT_BOARD_STATE);
-              window.saveBoard();
+              isFirebaseInitialized = true; isRemoteUpdate = false;
+              renderBoardState(DEFAULT_BOARD_STATE); window.saveBoard();
             } else {
-              isRemoteUpdate = true;
-              renderBoardState(data);
-              isFirebaseInitialized = true;
+              isRemoteUpdate = true; renderBoardState(data); isFirebaseInitialized = true;
               setTimeout(() => isRemoteUpdate = false, 100);
             }
           } else {
-            isFirebaseInitialized = true;
-            renderBoardState(DEFAULT_BOARD_STATE);
-            window.saveBoard();
+            isFirebaseInitialized = true; renderBoardState(DEFAULT_BOARD_STATE); window.saveBoard();
           }
         }, (error) => console.error("Sync error", error));
         
