@@ -224,19 +224,20 @@
   .modal-btn.danger { background: #FF3B30; color: white; }
   .modal-btn.danger:hover { background: #D70015; }
   
-  /* Nuovi Pulsanti Success/Archive - Rimpiccioliti */
-  .modal-btn.success { background: #34C759; color: white; margin-right: auto; padding: 8px 16px; font-size: 13px; border-radius: 14px; }
-  .modal-btn.success:hover { background: #28A745; }
-  .modal-btn.archive { background: #8E8E93; color: white; margin-right: auto; padding: 8px 16px; font-size: 13px; border-radius: 14px; }
-  .modal-btn.archive:hover { background: #636366; }
+  /* Nuovi Pulsanti Success/Archive - Minimal */
+  .modal-btn.success { background: #E4F8EB; color: #248A3D; margin-right: auto; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #D1F0DF; }
+  .modal-btn.success:hover { background: #D1F0DF; }
+  .modal-btn.archive { background: #F2F2F7; color: #86868B; margin-right: auto; padding: 6px 14px; font-size: 12px; border-radius: 10px; font-weight: 700; border: 1px solid #E5E5EA; }
+  .modal-btn.archive:hover { background: #E5E5EA; color: #1D1D1F; }
 
-  /* Pulsante icona cestino */
+  /* Pulsante icona cestino - Piccolo e Rosso */
   .icon-btn-delete {
-    background: transparent; border: none; font-size: 16px; cursor: pointer;
-    border-radius: 50%; transition: background-color 0.2s;
-    width: 32px; height: 32px; line-height: 32px; text-align: center; padding: 0;
+    background: rgba(255, 59, 48, 0.1); border: none; cursor: pointer;
+    border-radius: 50%; transition: all 0.2s;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; padding: 0;
+    color: #FF3B30;
   }
-  .icon-btn-delete:hover { background: rgba(255, 59, 48, 0.1); }
+  .icon-btn-delete:hover { background: rgba(255, 59, 48, 0.2); transform: scale(1.05); }
 
   #confirmModal .modal-content { max-width: 340px; text-align: center; padding: 32px; }
   .card-container.drag-over { background: rgba(0,0,0,0.03); border-radius: var(--border-radius-sm); border: 2px dashed rgba(0,0,0,0.1); }
@@ -362,8 +363,10 @@
   <div class="modal-content">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <h3 id="modalTitle" style="margin: 0;">Nuovo Task</h3>
-      <!-- Pulsante Elimina ridotto a icona -->
-      <button class="icon-btn-delete" id="deleteTaskBtn" style="display: none;" onclick="window.openConfirmModal()" title="Elimina Task">🗑️</button>
+      <!-- Pulsante Elimina ridotto a icona (SVG rosso) -->
+      <button class="icon-btn-delete" id="deleteTaskBtn" style="display: none;" onclick="window.openConfirmModal()" title="Elimina Task">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+      </button>
     </div>
     
     <div class="input-group">
@@ -596,15 +599,15 @@
     const modal = document.getElementById('taskModal');
     document.getElementById('modalTitle').textContent = 'Modifica Task';
     document.getElementById('modalSubmitBtn').textContent = 'Salva';
-    document.getElementById('deleteTaskBtn').style.display = 'block';
+    document.getElementById('deleteTaskBtn').style.display = 'flex';
 
     // Gestione dinamica Pulsante Pubblica/Archivia
     const colId = card.closest('.card-container').id;
     const archiveBtn = document.getElementById('archiveTaskBtn');
     if (colId === 'editoriale') {
-        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn success'; archiveBtn.textContent = '✅ Pubblicato';
+        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn success'; archiveBtn.textContent = 'Pubblicato';
     } else if (colId !== 'archivio') {
-        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn archive'; archiveBtn.textContent = '🗄️ Archivia';
+        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn archive'; archiveBtn.textContent = 'Archivia';
     } else {
         archiveBtn.style.display = 'none';
     }
