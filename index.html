@@ -35,7 +35,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; 
+    overflow-x: hidden; 
     background-color: #F5F5F7;
   }
 
@@ -64,42 +64,50 @@
   .column {
     background: var(--column-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
     border-radius: var(--border-radius-lg); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-    padding: 24px; min-width: 320px; width: 320px; resize: horizontal; overflow: hidden;
-    display: flex; flex-direction: column; gap: 16px; min-height: 450px; transition: box-shadow 0.3s ease;
+    padding: 24px; min-width: 320px; width: 320px; overflow: hidden;
+    display: flex; flex-direction: column; gap: 16px; min-height: 450px; transition: all 0.3s ease;
   }
-  .column:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.6); }
 
   .col-todo { min-width: 620px; width: 620px; }
 
-  /* COMPORTAMENTO SPECIALE COLONNA ARCHIVIO */
-  .col-archivio {
-    min-width: 140px; width: 140px; opacity: 0.8; filter: grayscale(50%);
-    background: rgba(240, 240, 245, 0.5); transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* --- Pulsanti di Espansione --- */
+  .toggle-btn {
+    background: rgba(0,0,0,0.05); border: none; border-radius: 8px;
+    padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+    color: var(--text-secondary); transition: all 0.2s; margin-left: auto;
   }
-  .col-archivio:hover {
-    min-width: 320px; width: 320px; opacity: 1; filter: grayscale(0%);
+  .toggle-btn:hover { background: rgba(0,0,0,0.1); color: var(--text-primary); }
+
+  /* COMPORTAMENTO COLONNA ARCHIVIO (COMPRESSA) */
+  .col-archivio.collapsed {
+    min-width: 180px; width: 180px; opacity: 0.8; filter: grayscale(40%);
+    background: rgba(240, 240, 245, 0.5);
   }
-  
-  /* Nasconde i dettagli interni dell'archivio e dei task LONG TERM quando non sono in focus */
-  .col-archivio:not(:hover) .card-subtitle,
-  .col-archivio:not(:hover) .card-body,
-  .col-archivio:not(:hover) .card-badges,
-  .col-archivio:not(:hover) .assignee-select,
-  #todo-long:not(:hover) .card-subtitle,
-  #todo-long:not(:hover) .card-body,
-  #todo-long:not(:hover) .card-badges,
-  #todo-long:not(:hover) .assignee-select {
+  .col-archivio.collapsed .card-subtitle,
+  .col-archivio.collapsed .card-body,
+  .col-archivio.collapsed .card-badges,
+  .col-archivio.collapsed .assignee-select {
     display: none;
   }
-  .col-archivio:not(:hover) .card-title,
-  #todo-long:not(:hover) .card-title {
+  .col-archivio.collapsed .card-title {
     font-size: 13px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .col-archivio:not(:hover) .card,
-  #todo-long:not(:hover) .card { padding: 12px; }
+  .col-archivio.collapsed .card { padding: 12px; box-shadow: none; border-color: rgba(0,0,0,0.05); }
+
+  /* COMPORTAMENTO LONG TERM (COMPRESSA) */
+  #todo-long-wrapper.collapsed .card-subtitle,
+  #todo-long-wrapper.collapsed .card-body,
+  #todo-long-wrapper.collapsed .card-badges,
+  #todo-long-wrapper.collapsed .assignee-select {
+    display: none;
+  }
+  #todo-long-wrapper.collapsed .card-title {
+    font-size: 13px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #todo-long-wrapper.collapsed .card { padding: 12px; box-shadow: none; border-color: rgba(0,0,0,0.05); }
 
   /* --- Headers & Colors --- */
-  .column-header { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .column-header { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; justify-content: space-between; }
   .column-title { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
 
   .col-updates .column-title { color: #007AFF; }
@@ -111,8 +119,8 @@
 
   /* --- Split Board Logic --- */
   .split-board { display: flex; gap: 24px; flex: 1; height: 100%; }
-  .sub-column { flex: 1; display: flex; flex-direction: column; min-width: 260px; }
-  .sub-column-title { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sub-column { flex: 1; display: flex; flex-direction: column; min-width: 260px; transition: all 0.3s ease; }
+  .sub-column-title { font-size: 13px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
 
   /* --- Cards & Tasks --- */
   .card-container { display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 50px; padding-bottom: 12px; }
@@ -123,7 +131,6 @@
     transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, padding 0.3s ease;
     border: 1px solid rgba(0,0,0,0.02); position: relative;
   }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04); }
   .card:active { cursor: grabbing; transform: scale(1.02); box-shadow: 0 16px 32px rgba(0,0,0,0.12); z-index: 100; }
 
   .card-title { margin: 0 0 8px 0; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; transition: all 0.3s ease; }
@@ -133,7 +140,6 @@
     display: inline-block; padding: 4px 10px; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; background: #F9F9FB;
   }
 
-  /* Usando div invece di p per contenere le liste e non rompere la formattazione */
   .card-body { margin: 0 0 18px 0; font-size: 14.5px; color: var(--text-body); line-height: 1.6; white-space: pre-wrap; }
   .card-body ul.task-list { margin: 8px 0; padding-left: 20px; list-style-position: outside; }
   .card-body ul.task-list li { margin-bottom: 8px; line-height: 1.5; font-size: inherit; color: inherit; }
@@ -201,7 +207,7 @@
 
   .color-picker { display: flex; gap: 12px; margin-top: 8px; }
   .color-swatch {
-    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s;
+    width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s;
   }
   .color-swatch.selected { transform: scale(1.15); box-shadow: 0 0 0 3px white inset, 0 2px 8px rgba(0,0,0,0.1); }
 
@@ -218,14 +224,49 @@
   .modal-btn.danger { background: #FF3B30; color: white; }
   .modal-btn.danger:hover { background: #D70015; }
   
-  /* Nuovi Pulsanti Success/Archive */
-  .modal-btn.success { background: #34C759; color: white; margin-right: auto; }
+  /* Nuovi Pulsanti Success/Archive - Rimpiccioliti */
+  .modal-btn.success { background: #34C759; color: white; margin-right: auto; padding: 8px 16px; font-size: 13px; border-radius: 14px; }
   .modal-btn.success:hover { background: #28A745; }
-  .modal-btn.archive { background: #8E8E93; color: white; margin-right: auto; }
+  .modal-btn.archive { background: #8E8E93; color: white; margin-right: auto; padding: 8px 16px; font-size: 13px; border-radius: 14px; }
   .modal-btn.archive:hover { background: #636366; }
+
+  /* Pulsante icona cestino */
+  .icon-btn-delete {
+    background: transparent; border: none; font-size: 16px; cursor: pointer;
+    border-radius: 50%; transition: background-color 0.2s;
+    width: 32px; height: 32px; line-height: 32px; text-align: center; padding: 0;
+  }
+  .icon-btn-delete:hover { background: rgba(255, 59, 48, 0.1); }
 
   #confirmModal .modal-content { max-width: 340px; text-align: center; padding: 32px; }
   .card-container.drag-over { background: rgba(0,0,0,0.03); border-radius: var(--border-radius-sm); border: 2px dashed rgba(0,0,0,0.1); }
+
+  /* =========================================
+     RESPONSIVE: LAYOUT MOBILE "A SETTORI"
+     ========================================= */
+  @media (max-width: 900px) {
+    .app-header { padding: 16px 20px; }
+    .board-wrapper { padding: 20px; }
+    
+    /* Disattiva lo scrolling orizzontale e impila in verticale */
+    .board { flex-direction: column; min-width: 100%; gap: 32px; }
+    
+    /* Ogni colonna diventa un "settore" a tutta larghezza */
+    .column {
+      width: 100% !important; 
+      min-width: 100% !important; 
+      height: auto; 
+      min-height: 0;
+      border-top: 6px solid rgba(0,0,0,0.05); /* Separa chiaramente i settori */
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    
+    /* La split-board (To Do List) si impila anch'essa verticalmente */
+    .split-board { flex-direction: column; gap: 32px; }
+    
+    /* Assicurarsi che l'archivio compresso su mobile prenda tutto lo spazio orizzontale */
+    .col-archivio.collapsed { width: 100% !important; min-width: 100% !important; filter: grayscale(10%); }
+  }
 </style>
 </head>
 <body>
@@ -273,12 +314,17 @@
       <div class="column-header"><h2 class="column-title">📝 To do list</h2></div>
       <div class="split-board">
         <div class="sub-column">
-          <h3 class="sub-column-title">Short Term</h3>
+          <h3 class="sub-column-title" style="margin-bottom: 12px;">Short Term</h3>
           <div class="card-container" id="todo-short" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
           <button class="add-btn" onclick="window.openAddModal('todo-short')">+ Aggiungi task</button>
         </div>
-        <div class="sub-column">
-          <h3 class="sub-column-title">Long Term</h3>
+        
+        <!-- Long term con funzionalità Collapsed/Espandi -->
+        <div class="sub-column collapsed" id="todo-long-wrapper">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 class="sub-column-title" style="margin: 0;">Long Term</h3>
+            <button class="toggle-btn" onclick="window.toggleSection('todo-long-wrapper', this)">Espandi</button>
+          </div>
           <div class="card-container" id="todo-long" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
           <button class="add-btn" onclick="window.openAddModal('todo-long')">+ Aggiungi task</button>
         </div>
@@ -299,9 +345,12 @@
       <button class="add-btn" onclick="window.openAddModal('info')">+ Aggiungi info</button>
     </div>
 
-    <!-- 6. ARCHIVIO (Nuova Colonna "Esplodibile") -->
-    <div class="column col-archivio">
-      <div class="column-header"><h2 class="column-title">🗄️ Archivio</h2></div>
+    <!-- 6. ARCHIVIO (Nuova Colonna "Esplodibile" con bottone) -->
+    <div class="column col-archivio collapsed" id="col-archivio">
+      <div class="column-header">
+        <h2 class="column-title">🗄️ Archivio</h2>
+        <button class="toggle-btn" onclick="window.toggleSection('col-archivio', this)">Espandi</button>
+      </div>
       <div class="card-container" id="archivio" ondragover="window.allowDrop(event)" ondrop="window.drop(event)" ondragenter="window.dragEnter(event)" ondragleave="window.dragLeave(event)"></div>
     </div>
 
@@ -311,10 +360,10 @@
 <!-- Modale di Aggiunta/Modifica Task -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-content">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-      <h3 id="modalTitle">Nuovo Task</h3>
-      <!-- Pulsante Elimina rimpicciolito in alto a destra -->
-      <button class="modal-btn cancel" id="deleteTaskBtn" style="display: none; color: #FF3B30; padding: 8px 12px; font-size: 12px;" onclick="window.openConfirmModal()">🗑️ Elimina</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 id="modalTitle" style="margin: 0;">Nuovo Task</h3>
+      <!-- Pulsante Elimina ridotto a icona -->
+      <button class="icon-btn-delete" id="deleteTaskBtn" style="display: none;" onclick="window.openConfirmModal()" title="Elimina Task">🗑️</button>
     </div>
     
     <div class="input-group">
@@ -399,6 +448,18 @@
 
   if (sessionStorage.getItem('parma_auth') === 'true') {
     document.getElementById('login-screen').classList.remove('active');
+  }
+
+  // Funzione per mostrare/nascondere le sezioni (Archivio e Long Term)
+  window.toggleSection = function(id, btn) {
+    const el = document.getElementById(id);
+    if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        btn.textContent = 'Riduci';
+    } else {
+        el.classList.add('collapsed');
+        btn.textContent = 'Espandi';
+    }
   }
 
   const DEFAULT_BOARD_STATE = {
