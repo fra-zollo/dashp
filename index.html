@@ -126,9 +126,10 @@
     display: inline-block; padding: 4px 10px; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; background: #F9F9FB;
   }
 
+  /* Usando div invece di p per contenere le liste e non rompere la formattazione */
   .card-body { margin: 0 0 18px 0; font-size: 14.5px; color: var(--text-body); line-height: 1.6; white-space: pre-wrap; }
-  .card-body ul.task-list { margin: 8px 0; padding-left: 20px; }
-  .card-body ul.task-list li { margin-bottom: 8px; line-height: 1.5; }
+  .card-body ul.task-list { margin: 8px 0; padding-left: 20px; list-style-position: outside; }
+  .card-body ul.task-list li { margin-bottom: 8px; line-height: 1.5; font-size: inherit; color: inherit; }
 
   /* --- Badges --- */
   .card-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -458,7 +459,7 @@
     }
 
     if (cardData.body) {
-      innerHTML += `<p class="card-body" data-raw="${encodeURIComponent(cardData.body)}">${formatTextToHTML(cardData.body)}</p>`;
+      innerHTML += `<div class="card-body" data-raw="${encodeURIComponent(cardData.body)}">${formatTextToHTML(cardData.body)}</div>`;
     }
 
     innerHTML += `
@@ -533,7 +534,7 @@
     const colId = card.closest('.card-container').id;
     const archiveBtn = document.getElementById('archiveTaskBtn');
     if (colId === 'editoriale') {
-        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn success'; archiveBtn.textContent = '✅ Pubblica';
+        archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn success'; archiveBtn.textContent = '✅ Pubblicato';
     } else if (colId !== 'archivio') {
         archiveBtn.style.display = 'block'; archiveBtn.className = 'modal-btn archive'; archiveBtn.textContent = '🗄️ Archivia';
     } else {
